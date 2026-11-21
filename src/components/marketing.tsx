@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Bell } from "lucide-react";
+import FooterBlock from "@/components/blocks/footer-2";
 import { Button } from "@/components/ui/button";
 
 export const GITHUB_URL = "https://github.com/zhshimul815/pushkit";
@@ -39,18 +40,5 @@ export function MarketingHeader() {
 }
 
 export function MarketingFooter() {
-  return (
-    <footer className="border-t">
-      <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-3 px-4 py-6 text-sm text-muted-foreground sm:flex-row sm:items-center sm:px-6">
-        <span className="flex items-center gap-2 font-medium text-foreground">
-          <Bell className="size-4" />
-          PushKit
-        </span>
-        <span>MIT License</span>
-        <Link href="/deploy" className="hover:text-foreground">Deploy Guide</Link>
-        <a href={GITHUB_URL} className="hover:text-foreground">GitHub</a>
-        <Link href="/login" className="hover:text-foreground">Admin Login</Link>
-      </div>
-    </footer>
-  );
+  return <FooterBlock />;
 }
