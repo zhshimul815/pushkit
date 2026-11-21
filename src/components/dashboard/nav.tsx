@@ -36,7 +36,7 @@ export function DashboardNav({ email, role }: { email: string; role: string }) {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex h-14 items-center gap-2 border-b px-4 font-semibold">
+      <div className="hidden h-14 items-center gap-2 border-b px-4 font-semibold md:flex">
         <Bell className="size-5" aria-hidden /> PushKit
       </div>
       <nav className="flex-1 space-y-1 overflow-y-auto p-3">

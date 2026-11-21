@@ -1,3 +1,4 @@
+import { Bell, Menu, X } from "lucide-react";
 import { DashboardNav } from "@/components/dashboard/nav";
 import { getCurrentUser } from "@/lib/auth";
 
@@ -35,12 +36,20 @@ export default async function DashboardLayout({
         <DashboardNav email={user.email} role={user.role} />
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
-        <div className="border-b md:hidden">
-          <details>
-            <summary className="flex h-14 cursor-pointer items-center px-4 font-semibold">
-              PushKit — Menu
+        <div className="border-b bg-background md:hidden">
+          <details className="group">
+            <summary className="flex h-14 cursor-pointer items-center justify-between px-4 font-semibold select-none list-none [&::-webkit-details-marker]:hidden">
+              <div className="flex items-center gap-2">
+                <Bell className="size-5" aria-hidden="true" />
+                <span>PushKit</span>
+              </div>
+              <div className="flex items-center justify-center rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground">
+                <Menu className="size-5 group-open:hidden" aria-hidden="true" />
+                <X className="size-5 hidden group-open:block" aria-hidden="true" />
+                <span className="sr-only">Toggle navigation menu</span>
+              </div>
             </summary>
-            <div className="border-t">
+            <div className="border-t bg-background">
               <DashboardNav email={user.email} role={user.role} />
             </div>
           </details>
