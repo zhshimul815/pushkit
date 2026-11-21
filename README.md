@@ -255,10 +255,12 @@ npx wrangler login
 npx wrangler d1 create pushkit-db
 npm run db:migrate:remote
 
-# R2 + Queues
-npx wrangler r2 bucket create pushkit-media
+# Queues (campaign delivery fan-out)
 npx wrangler queues create pushkit-send
 npx wrangler queues create pushkit-dlq
+
+# Optional: R2 for direct image uploads (uncomment in wrangler.toml if enabled)
+# npx wrangler r2 bucket create pushkit-media
 ```
 
 Edit `wrangler.toml` → `[vars]`, then set the Resend secret (**before first deploy** — the first login code is delivered by email; verify the `EMAIL_FROM` domain in Resend first):

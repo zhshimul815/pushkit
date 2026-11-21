@@ -16,9 +16,10 @@ assumes the Cloudflare **free** tier. Estimated time: 20–30 minutes.
 ```bash
 npx wrangler login
 npx wrangler d1 create pushkit-db          # copy the database_id it prints
-npx wrangler r2 bucket create pushkit-media
 npx wrangler queues create pushkit-send
 npx wrangler queues create pushkit-dlq     # dead-letter queue for failed batches
+# Optional: R2 for direct image uploads (if R2 is enabled on your account):
+# npx wrangler r2 bucket create pushkit-media
 ```
 
 ## 3. Configure `wrangler.toml`

@@ -10,10 +10,16 @@ database_name = "pushkit-db"
 database_id = "REPLACE_WITH_D1_DATABASE_ID"
 migrations_dir = "migrations"
 
-# --- R2 — 10 GB storage, zero egress on Free ---
-[[r2_buckets]]
-binding = "MEDIA"
-bucket_name = "pushkit-media"
+# --- R2 (Optional) — 10 GB storage, zero egress on Free ---
+# Cloudflare offers 10 GB free R2 storage, but requires enabling R2 in the Cloudflare
+# Dashboard (which requires a payment method on file for verification).
+# For a 100% free, card-free deploy: leave this commented out. Notification images
+# can be pasted as public URLs (or auto-fetched via OpenGraph).
+# To enable R2 uploads: enable R2 in Cloudflare dashboard, run
+# `npx wrangler r2 bucket create pushkit-media`, and uncomment the block below:
+# [[r2_buckets]]
+# binding = "MEDIA"
+# bucket_name = "pushkit-media"
 
 # --- Queues — 10,000 operations / day on Free ---
 # Producer (Next.js app via OpenNext) + consumer (same Worker).
