@@ -1,0 +1,53 @@
+name = "pushkit"
+main = "cloudflare-worker.ts"
+compatibility_date = "2025-09-01"
+compatibility_flags = ["nodejs_compat"]
+
+# --- D1 (SQLite) — 100,000 rows written / day on Free ---
+[[d1_databases]]
+binding = "DB"
+database_name = "pushkit-db"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+migrations_dir = "migrations"
+
+# --- R2 — 10 GB storage, zero egress on Free ---
+[[r2_buckets]]
+binding = "MEDIA"
+bucket_name = "pushkit-media"
+
+# --- Queues — 10,000 operations / day on Free ---
+# Producer (Next.js app via OpenNext) + consumer (same Worker).
+[[queues.producers]]
+binding = "PUSH_QUEUE"
+queue = "pushkit-send"
+
+[[queues.consumers]]
+queue = "pushkit-send"
+# max_batch_size = 1 on purpose: one message (40 subscribers) per invocation
+# keeps the invocation under the free tier's 50-subrequest limit (docs/PLAN.md O1).
+max_batch_size = 1
+max_batch_timeout = 5
+max_retries = 3
+dead_letter_queue = "pushkit-dlq"
+
+# --- Cron — every 5 min: scheduled campaigns + RSS polling. Daily 03:00 UTC: purge expired endpoints. ---
+[triggers]
+crons = ["*/5 * * * *", "0 3 * * *"]
+
+[assets]
+binding = "ASSETS"
+directory = ".open-next/assets"
+
+[vars]
+# Public base URL of this deployment, e.g. https://push.example.com
+NEXT_PUBLIC_APP_URL = "http://localhost:3000"
+# Owner bootstrap email. First login with this email creates the owner account.
+OWNER_EMAIL = "owner@example.com"
+# From address for OTP / magic link email.
+EMAIL_FROM = "PushKit <auth@example.com>"
+# VAPID subject (mailto: or https: URL) used as JWT `sub` fallback per site.
+VAPID_SUBJECT = "mailto:owner@example.com"
+
+# Secrets — set with `wrangler secret put <NAME>`, never commit values:
+#   RESEND_API_KEY   — Resend API key for OTP / magic link email
+#   SESSION_SECRET   — optional extra entropy for token hashing

@@ -1,0 +1,21 @@
+# PushKit local development variables
+# Copy this file to .dev.vars for Wrangler local development:
+#   cp .dev.vars.example .dev.vars
+
+# Public base URL of your PushKit deployment
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+
+# Owner bootstrap email. The first login with this email creates the owner account.
+OWNER_EMAIL="owner@example.com"
+
+# From address for OTP / magic link emails
+EMAIL_FROM="PushKit <auth@example.com>"
+
+# VAPID subject (mailto: or https: URL)
+VAPID_SUBJECT="mailto:owner@example.com"
+
+# Resend API Key for sending authentication emails (optional in dev, devCode shown in console if omitted)
+# RESEND_API_KEY="re_..."
+
+# Optional extra entropy for session / token hashing
+# SESSION_SECRET="generate-a-secure-random-string-here"
