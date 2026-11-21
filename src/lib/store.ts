@@ -377,7 +377,7 @@ export class D1Store implements Store {
     const existing = await this.db.prepare("SELECT id FROM subscribers WHERE endpoint = ?").bind(s.endpoint).first<Row>();
     await this.db.prepare(
       `INSERT INTO subscribers (id, site_id, endpoint, p256dh, auth, country, browser, os, device, page_url, language, created_at, last_seen_at, deliverable, source, prompt_variant)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 'sdk', ?)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 'sdk', ?)
        ON CONFLICT(endpoint) DO UPDATE SET p256dh = excluded.p256dh, auth = excluded.auth, last_seen_at = excluded.last_seen_at, page_url = excluded.page_url,
          deliverable = 1, prompt_variant = COALESCE(excluded.prompt_variant, subscribers.prompt_variant)`,
     ).bind(s.id, s.site_id, s.endpoint, s.p256dh, s.auth, s.country, s.browser, s.os, s.device, s.page_url, s.language, s.created_at, s.last_seen_at, s.prompt_variant).run();

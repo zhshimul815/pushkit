@@ -102,6 +102,17 @@
         tags: tags,
         variant: cfg ? getVariant(cfg) : undefined,
       }),
+    }).then(function (res) {
+      if (!res.ok) {
+        return res.json().then(function (err) {
+          console.error("PushKit /api/public/subscribe error:", res.status, err);
+        }).catch(function () {
+          console.error("PushKit /api/public/subscribe error:", res.status);
+        });
+      }
+      console.log("PushKit: Successfully subscribed!");
+    }).catch(function (err) {
+      console.error("PushKit subscription network error:", err);
     });
   }
 
@@ -143,7 +154,10 @@
         visitPing(sub);
         return sendSubscription(sub, cfg).then(function () { return sub; });
       })
-      .catch(function () { return null; });
+      .catch(function (err) {
+        console.error("PushKit registration/subscription error:", err);
+        return null;
+      });
   }
   function subscribeNew(reg, cfg) {
     return reg.pushManager.subscribe({
@@ -166,7 +180,23 @@
     allow.textContent = t.allow;
     allow.setAttribute("style", BTN + "border:0;background:#111;color:#fff");
     deny.onclick = function () { try { localStorage.setItem("pushkit:dismissed", "1"); } catch {} el.remove(); };
-    allow.onclick = function () { el.remove(); subscribe(); };
+    allow.onclick = function () {
+      el.remove();
+      if (typeof Notification !== "undefined" && Notification.requestPermission && Notification.permission === "default") {
+        Notification.requestPermission().then(function (perm) {
+          if (perm === "granted") {
+            subscribe();
+          } else {
+            console.warn("PushKit: Notification permission " + perm);
+          }
+        }).catch(function (err) {
+          console.error("PushKit requestPermission error:", err);
+          subscribe();
+        });
+      } else {
+        subscribe();
+      }
+    };
     row.appendChild(deny); row.appendChild(allow);
     return row;
   }

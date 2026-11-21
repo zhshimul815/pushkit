@@ -5,7 +5,7 @@
   "scripts": {
     "postinstall": "node scripts/patch-cookie.js",
     "dev": "next dev",
-    "build": "node scripts/patch-cookie.js && next build",
+    "build": "npm run build:sdk && node scripts/patch-cookie.js && next build",
     "build:sdk": "esbuild sdk/sdk.js --minify --outfile=public/sdk.js",
     "start": "next start",
     "lint": "eslint",

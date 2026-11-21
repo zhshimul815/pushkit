@@ -70,6 +70,6 @@ export async function verifyWebhook(
   return timingSafeEqual(expected, signature.replace(/^sha256=/, ""));
 }
 
-export function jsonError(message: string, status: number): Response {
-  return Response.json({ error: message }, { status });
+export function jsonError(message: string, status: number, headers?: HeadersInit): Response {
+  return Response.json({ error: message }, { status, headers });
 }
