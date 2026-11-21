@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
+    "@phosphor-icons/react": "^2.1.10",
     "@tanstack/react-table": "^9.3.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -48,6 +49,6 @@
     "typescript": "^5",
     "wrangler": "^4.166.0"
   },
-  "description": "PushKit \u2014 free, open-source, self-hosted web push notification platform for the Cloudflare Free Tier.",
+  "description": "PushKit — free, open-source, self-hosted web push notification platform for the Cloudflare Free Tier.",
   "license": "ELv2"
 }

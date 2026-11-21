@@ -3,7 +3,6 @@ import * as React from "react"
 const MOBILE_BREAKPOINT = 768
 
 export function useIsMobile() {
-  // Lazy initializer reads the initial viewport synchronously (client components only).
   const [isMobile, setIsMobile] = React.useState<boolean>(() =>
     typeof window === "undefined"
       ? false
