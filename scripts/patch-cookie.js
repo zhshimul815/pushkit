@@ -45,3 +45,23 @@ if (typeof exports !== "undefined") {
     console.warn(`[patch-cookie] Could not patch ${file}:`, err.message);
   }
 }
+
+// Patch Next.js base-server.js to surface exact error details when a 500 occurs
+const baseServerPath = path.join(nodeModules, "next", "dist", "server", "base-server.js");
+if (fs.existsSync(baseServerPath)) {
+  try {
+    let bsContent = fs.readFileSync(baseServerPath, "utf8");
+    bsContent = bsContent.replace(
+      "res.body('Internal Server Error').send();",
+      "res.body('Internal Server Error: ' + ((err && err.stack) || (err && err.message) || String(err))).send();"
+    );
+    bsContent = bsContent.replace(
+      "_renderresult.default.fromStatic('Internal Server Error', 'text/plain')",
+      "_renderresult.default.fromStatic('Internal Server Error: ' + ((error && error.stack) || (error && error.message) || String(error)), 'text/plain')"
+    );
+    fs.writeFileSync(baseServerPath, bsContent);
+    console.log("[patch] Successfully patched base-server.js for detailed error output");
+  } catch (err) {
+    console.warn("[patch] Could not patch base-server.js:", err.message);
+  }
+}
