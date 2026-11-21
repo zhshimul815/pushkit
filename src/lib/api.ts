@@ -9,8 +9,11 @@ export async function withUser(
   try {
     const user = await requireUser();
     return await fn(user);
-  } catch (err) {
-    if (err instanceof AuthError) return jsonError(err.message, err.status);
+  } catch (err: unknown) {
+    const e = err as { message?: string; status?: number };
+    if (err instanceof AuthError || e?.status === 401 || e?.status === 403) {
+      return jsonError(e.message || "Unauthorized", e.status || 401);
+    }
     throw err;
   }
 }
@@ -21,8 +24,11 @@ export async function withOwner(
   try {
     const user = await requireOwner();
     return await fn(user);
-  } catch (err) {
-    if (err instanceof AuthError) return jsonError(err.message, err.status);
+  } catch (err: unknown) {
+    const e = err as { message?: string; status?: number };
+    if (err instanceof AuthError || e?.status === 401 || e?.status === 403) {
+      return jsonError(e.message || "Owner access required", e.status || 403);
+    }
     throw err;
   }
 }

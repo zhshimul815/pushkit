@@ -2,18 +2,25 @@
 const fs = require("fs");
 const path = require("path");
 
-function findCookieFiles(dir) {
+function findCookieDistFiles(dir) {
   const results = [];
   if (!fs.existsSync(dir)) return results;
   const list = fs.readdirSync(dir, { withFileTypes: true });
   for (const entry of list) {
     const fullPath = path.join(dir, entry.name);
     if (entry.isDirectory()) {
-      if (entry.name === ".git" || entry.name === ".next" || entry.name === ".open-next") continue;
-      results.push(...findCookieFiles(fullPath));
+      if (
+        entry.name === ".git" ||
+        entry.name === ".next" ||
+        entry.name === ".open-next" ||
+        entry.name === "next" // NEVER patch next's internal compiled packages
+      ) {
+        continue;
+      }
+      results.push(...findCookieDistFiles(fullPath));
     } else if (
       (entry.name === "index.js" || entry.name === "index.mjs") &&
-      fullPath.includes(`${path.sep}cookie${path.sep}`)
+      fullPath.includes(`${path.sep}cookie${path.sep}dist${path.sep}`)
     ) {
       results.push(fullPath);
     }
@@ -22,7 +29,7 @@ function findCookieFiles(dir) {
 }
 
 const nodeModules = path.join(__dirname, "..", "node_modules");
-const cookieFiles = findCookieFiles(nodeModules);
+const cookieFiles = findCookieDistFiles(nodeModules);
 
 for (const file of cookieFiles) {
   try {
@@ -30,12 +37,8 @@ for (const file of cookieFiles) {
     if (!content.includes("exports.default = exports")) {
       content += `
 // Patched for OpenNext / ES module compatibility:
-if (typeof exports !== "undefined") {
+if (typeof exports !== "undefined" && exports.parse) {
   exports.default = exports;
-  if (typeof module !== "undefined" && module.exports) {
-    module.exports = exports;
-    module.exports.default = exports;
-  }
 }
 `;
       fs.writeFileSync(file, content);
@@ -43,25 +46,5 @@ if (typeof exports !== "undefined") {
     }
   } catch (err) {
     console.warn(`[patch-cookie] Could not patch ${file}:`, err.message);
-  }
-}
-
-// Patch Next.js base-server.js to surface exact error details when a 500 occurs
-const baseServerPath = path.join(nodeModules, "next", "dist", "server", "base-server.js");
-if (fs.existsSync(baseServerPath)) {
-  try {
-    let bsContent = fs.readFileSync(baseServerPath, "utf8");
-    bsContent = bsContent.replace(
-      "res.body('Internal Server Error').send();",
-      "res.body('Internal Server Error: ' + ((err && err.stack) || (err && err.message) || String(err))).send();"
-    );
-    bsContent = bsContent.replace(
-      "_renderresult.default.fromStatic('Internal Server Error', 'text/plain')",
-      "_renderresult.default.fromStatic('Internal Server Error: ' + ((error && error.stack) || (error && error.message) || String(error)), 'text/plain')"
-    );
-    fs.writeFileSync(baseServerPath, bsContent);
-    console.log("[patch] Successfully patched base-server.js for detailed error output");
-  } catch (err) {
-    console.warn("[patch] Could not patch base-server.js:", err.message);
   }
 }
