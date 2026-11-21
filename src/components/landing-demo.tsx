@@ -135,18 +135,20 @@ export function LandingDemo() {
   const [viewMode, setViewMode] = useState<"desktop" | "mobile">("desktop");
   const [composerPreview, setComposerPreview] = useState<"android" | "windows" | "macos">("android");
 
+  const isMobile = viewMode === "mobile";
+
   return (
     <div className="w-full">
       {/* Device Mode Switcher Bar */}
       <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-medium text-muted-foreground">Interactive Demo Mode:</span>
+          <span className="text-xs font-medium text-muted-foreground">Demo Size:</span>
           <div className="flex items-center rounded-lg border bg-muted/40 p-0.5">
             <button
               type="button"
               onClick={() => setViewMode("desktop")}
               className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition ${
-                viewMode === "desktop"
+                !isMobile
                   ? "bg-background text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
               }`}
@@ -157,7 +159,7 @@ export function LandingDemo() {
               type="button"
               onClick={() => setViewMode("mobile")}
               className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition ${
-                viewMode === "mobile"
+                isMobile
                   ? "bg-background text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
               }`}
@@ -172,78 +174,95 @@ export function LandingDemo() {
         </span>
       </div>
 
-      {/* -------------------------------------------------------------- */}
-      {/* DESKTOP SCREEN FRAME                                          */}
-      {/* -------------------------------------------------------------- */}
-      {viewMode === "desktop" ? (
-        <div className="overflow-hidden rounded-xl border bg-background shadow-lg transition-all">
-          {/* Window Title Bar */}
-          <div className="flex h-11 items-center justify-between border-b px-4 bg-muted/30">
-            <div className="flex items-center gap-2">
-              <span className="size-2.5 rounded-full bg-red-400" />
-              <span className="size-2.5 rounded-full bg-amber-400" />
-              <span className="size-2.5 rounded-full bg-green-400" />
-              <span className="ml-3 text-xs font-mono text-muted-foreground">
-                pushkit.your-domain.com/dashboard/{activeTab.toLowerCase().replace(" ", "-")}
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="flex items-center gap-1.5 rounded-full border bg-background px-2.5 py-0.5 text-[11px] text-muted-foreground">
-                <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                Live Demo · Read-only
-              </span>
-            </div>
+      {/* Screen Frame Mockup */}
+      <div
+        className={`overflow-hidden rounded-xl border bg-background shadow-lg transition-all duration-300 ${
+          isMobile ? "max-w-md mx-auto" : "w-full"
+        }`}
+      >
+        {/* Window Title Bar */}
+        <div className="flex h-11 items-center justify-between border-b px-4 bg-muted/30">
+          <div className="flex items-center gap-2">
+            <span className="size-2.5 rounded-full bg-red-400" />
+            <span className="size-2.5 rounded-full bg-amber-400" />
+            <span className="size-2.5 rounded-full bg-green-400" />
+            <span className="ml-3 text-xs font-mono text-muted-foreground truncate max-w-[180px] sm:max-w-none">
+              pushkit.your-domain.com/dashboard/{activeTab.toLowerCase().replace(" ", "-")}
+            </span>
           </div>
+          <div className="flex items-center gap-2">
+            <span className="flex items-center gap-1.5 rounded-full border bg-background px-2.5 py-0.5 text-[11px] text-muted-foreground">
+              <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="hidden sm:inline">Live Demo · </span>Read-only
+            </span>
+          </div>
+        </div>
 
-          <div className="flex h-[600px] overflow-hidden">
-            {/* Sidebar Navigation */}
-            <div className="w-52 shrink-0 border-r bg-muted/10 p-3 flex flex-col justify-between">
-              <div>
-                <div className="px-2 pb-3 pt-1 flex items-center justify-between">
-                  <p className="text-sm font-bold tracking-tight">PushKit</p>
-                  <span className="rounded bg-primary/10 px-1.5 py-0.5 text-[10px] font-semibold text-primary">v1.0</span>
-                </div>
-                <div className="space-y-1">
-                  {NAV_ITEMS.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = activeTab === item.name;
-                    return (
-                      <button
-                        key={item.name}
-                        type="button"
-                        onClick={() => setActiveTab(item.name)}
-                        className={`w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium transition text-left ${
-                          isActive
-                            ? "bg-primary text-primary-foreground shadow-sm"
-                            : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                        }`}
-                      >
-                        <Icon className="size-4 shrink-0" />
-                        {item.name}
-                      </button>
-                    );
-                  })}
-                  <div className="pt-2 border-t border-border/40 mt-2">
-                    <div className="w-full flex items-center justify-between rounded-lg px-2.5 py-1.5 text-xs text-muted-foreground">
-                      <span className="flex items-center gap-2.5">
-                        <Settings className="size-4 shrink-0 text-muted-foreground/70" />
-                        Settings
-                      </span>
-                    </div>
+        <div className="flex h-[600px] overflow-hidden">
+          {/* Sidebar Navigation */}
+          <div
+            className={`${
+              isMobile ? "w-14" : "w-52"
+            } shrink-0 border-r bg-muted/10 p-2 sm:p-3 flex flex-col justify-between transition-all duration-200`}
+          >
+            <div>
+              <div className={`pb-3 pt-1 flex items-center ${isMobile ? "justify-center" : "justify-between px-2"}`}>
+                <p className="text-sm font-bold tracking-tight">{isMobile ? "PK" : "PushKit"}</p>
+                {!isMobile && (
+                  <span className="rounded bg-primary/10 px-1.5 py-0.5 text-[10px] font-semibold text-primary">
+                    v1.0
+                  </span>
+                )}
+              </div>
+              <div className="space-y-1">
+                {NAV_ITEMS.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = activeTab === item.name;
+                  return (
+                    <button
+                      key={item.name}
+                      type="button"
+                      title={item.name}
+                      onClick={() => setActiveTab(item.name)}
+                      className={`w-full flex items-center ${
+                        isMobile ? "justify-center" : "gap-2.5"
+                      } rounded-lg ${isMobile ? "p-2" : "px-2.5 py-2"} text-xs font-medium transition text-left ${
+                        isActive
+                          ? "bg-primary text-primary-foreground shadow-sm"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      }`}
+                    >
+                      <Icon className="size-4 shrink-0" />
+                      {!isMobile && <span>{item.name}</span>}
+                    </button>
+                  );
+                })}
+                <div className="pt-2 border-t border-border/40 mt-2">
+                  <div
+                    title="Settings"
+                    className={`w-full flex items-center ${
+                      isMobile ? "justify-center" : "gap-2.5"
+                    } rounded-lg ${isMobile ? "p-2" : "px-2.5 py-1.5"} text-xs text-muted-foreground`}
+                  >
+                    <Settings className="size-4 shrink-0 text-muted-foreground/70" />
+                    {!isMobile && <span>Settings</span>}
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* Site selector badge */}
+            {/* Site selector badge */}
+            {!isMobile && (
               <div className="rounded-lg border bg-background p-2.5">
                 <p className="text-[10px] text-muted-foreground uppercase font-medium">Selected Site</p>
                 <p className="mt-0.5 text-xs font-medium truncate">Daily Tech Blog</p>
                 <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">● 34,120 Subscribers</p>
               </div>
-            </div>
+            )}
+          </div>
 
-            {/* Scrollable Main Content Area */}
-            <div className="flex-1 overflow-y-auto p-5 scroll-smooth">
+          {/* Scrollable Main Content Area */}
+          <div className="flex-1 overflow-y-auto p-4 sm:p-5 scroll-smooth">
               <div className="max-w-5xl mx-auto space-y-4">
                 {/* Header of Active Tab */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b pb-3">
@@ -629,171 +648,6 @@ export function LandingDemo() {
             </div>
           </div>
         </div>
-      ) : (
-        /* -------------------------------------------------------------- */
-        /* MOBILE PHONE DEMO FRAME                                       */
-        /* -------------------------------------------------------------- */
-        <div className="mx-auto max-w-sm overflow-hidden rounded-[36px] border-4 border-neutral-800 bg-background shadow-2xl ring-1 ring-white/10">
-          {/* Mobile Top Speaker & Camera Dynamic Notch */}
-          <div className="flex h-7 items-center justify-center bg-neutral-950 px-6">
-            <span className="h-3.5 w-24 rounded-full bg-neutral-900 ring-1 ring-neutral-800" />
-          </div>
-
-          {/* Mobile App Header */}
-          <div className="flex items-center justify-between border-b px-4 py-2.5 bg-muted/40">
-            <div>
-              <p className="text-xs font-bold">PushKit Dashboard</p>
-              <p className="text-[10px] text-muted-foreground">Daily Tech Blog (48,214)</p>
-            </div>
-            <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
-          </div>
-
-          {/* Horizontal Nav Bar for Mobile */}
-          <div className="flex gap-1 overflow-x-auto border-b bg-background px-3 py-2 scrollbar-none">
-            {NAV_ITEMS.map((item) => {
-              const isActive = activeTab === item.name;
-              return (
-                <button
-                  key={item.name}
-                  type="button"
-                  onClick={() => setActiveTab(item.name)}
-                  className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-medium transition ${
-                    isActive ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
-                  }`}
-                >
-                  {item.name}
-                </button>
-              );
-            })}
-            <span className="shrink-0 rounded-full px-2.5 py-1 text-[11px] font-medium text-muted-foreground bg-muted/50 opacity-60">
-              Settings
-            </span>
-          </div>
-
-          {/* Mobile Scrollable Viewport */}
-          <div className="h-[480px] overflow-y-auto p-4 space-y-3 scroll-smooth">
-            {activeTab === "Overview" && (
-              <div className="space-y-3">
-                <div className="grid grid-cols-2 gap-2">
-                  {KPIS.map((kpi) => (
-                    <div key={kpi.label} className="rounded-xl border bg-muted/20 p-3">
-                      <p className="text-[10px] text-muted-foreground">{kpi.label}</p>
-                      <p className="text-lg font-bold">{kpi.value}</p>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="rounded-xl border bg-card p-3">
-                  <p className="text-xs font-semibold mb-2">30-Day Activity</p>
-                  <OverviewChart series={SERIES.slice(14)} />
-                </div>
-
-                <div className="rounded-xl border bg-card p-3">
-                  <p className="text-xs font-semibold mb-2">Recent Broadcasts</p>
-                  <div className="space-y-2">
-                    {CAMPAIGNS.slice(0, 3).map((c) => (
-                      <div key={c.title} className="rounded-lg border bg-muted/20 p-2 text-xs">
-                        <p className="font-medium truncate">{c.title}</p>
-                        <div className="mt-1 flex justify-between text-[11px] text-muted-foreground">
-                          <span>{c.sent} sent</span>
-                          <span className="font-semibold text-primary">{c.ctr} CTR</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeTab === "Sites" && (
-              <div className="space-y-2">
-                {SITES.map((site) => (
-                  <div key={site.siteId} className="rounded-xl border bg-card p-3">
-                    <p className="text-xs font-bold">{site.name}</p>
-                    <p className="text-[11px] text-muted-foreground">{site.domain}</p>
-                    <p className="mt-1 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
-                      {site.subscribers} subscribers
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {activeTab === "Campaigns" && (
-              <div className="space-y-2">
-                {CAMPAIGNS.map((c) => (
-                  <div key={c.title} className="rounded-xl border bg-card p-3 text-xs space-y-1">
-                    <div className="flex items-center justify-between">
-                      <p className="font-semibold truncate">{c.title}</p>
-                      <Badge variant="outline" className="text-[10px]">{c.status}</Badge>
-                    </div>
-                    <p className="text-[11px] text-muted-foreground">{c.time}</p>
-                    <div className="flex justify-between text-[11px] pt-1 border-t text-muted-foreground">
-                      <span>Sent: {c.sent}</span>
-                      <span>Clicks: {c.clicks}</span>
-                      <span className="font-medium text-foreground">{c.ctr}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {activeTab === "New Campaign" && (
-              <div className="space-y-3 rounded-xl border bg-card p-3 text-xs">
-                <div>
-                  <label className="text-[10px] font-semibold text-muted-foreground">Title</label>
-                  <p className="mt-0.5 rounded border bg-muted/30 p-2 text-xs font-medium">
-                    10 Ways to Scale WordPress with Cloudflare Workers
-                  </p>
-                </div>
-                <div>
-                  <label className="text-[10px] font-semibold text-muted-foreground">Body</label>
-                  <p className="mt-0.5 rounded border bg-muted/30 p-2 text-xs text-muted-foreground">
-                    Sub-50ms TTFB worldwide with zero egress costs and instant edge cache purges.
-                  </p>
-                </div>
-                <div className="rounded-lg border bg-muted/40 p-2.5">
-                  <p className="text-[10px] font-semibold text-muted-foreground mb-1">Android Notification</p>
-                  <div className="rounded-md border bg-background p-2">
-                    <p className="font-medium text-xs">10 Ways to Scale WordPress...</p>
-                    <p className="text-[10px] text-muted-foreground">Chrome · now · dailytech.blog</p>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeTab === "Subscribers" && (
-              <div className="space-y-2">
-                {SUBSCRIBERS.map((s) => (
-                  <div key={s.id} className="rounded-xl border bg-card p-2.5 text-xs flex justify-between items-center">
-                    <div>
-                      <p className="font-mono font-medium text-[11px]">{s.id}</p>
-                      <p className="text-[10px] text-muted-foreground">{s.country} · {s.browser}</p>
-                    </div>
-                    <span className="text-[10px] text-muted-foreground">{s.seen}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {activeTab === "Templates" && (
-              <div className="space-y-2">
-                {TEMPLATES.map((tmpl) => (
-                  <div key={tmpl.title} className="rounded-xl border bg-card p-3 text-xs">
-                    <p className="font-bold">{tmpl.title}</p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">{tmpl.body}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Mobile Bottom Home Bar */}
-          <div className="h-5 bg-neutral-950 flex items-center justify-center">
-            <span className="h-1 w-28 rounded-full bg-neutral-700" />
-          </div>
-        </div>
-      )}
-    </div>
+      </div>
   );
 }
