@@ -271,11 +271,9 @@ export default function LandingPage() {
                 <tr className="border-b bg-muted/50">
                   <th className="px-4 py-3 font-semibold text-foreground">Audience Size</th>
                   <th className="px-4 py-3 font-semibold text-foreground">
-                    <span className="inline-flex items-center gap-1.5">
-                      <OneSignalIcon className="size-4 shrink-0" /> OneSignal Growth
-                    </span>
+                    OneSignal
                   </th>
-                  <th className="px-4 py-3 font-semibold text-primary">PushKit Free Tier</th>
+                  <th className="px-4 py-3 font-semibold text-primary">PushKit</th>
                   <th className="px-4 py-3 font-semibold text-emerald-600">Annual Savings</th>
                 </tr>
               </thead>

@@ -4,7 +4,7 @@ import { Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MarketingFooter, MarketingHeader } from "@/components/marketing";
-import { CloudflareIcon, GitHubIcon, OneSignalIcon } from "@/components/icons";
+import { CloudflareIcon, GitHubIcon } from "@/components/icons";
 import { BreadcrumbsSchema, FAQSchema } from "@/components/seo-schema";
 import { SITE_URL, GITHUB_REPO_URL } from "@/lib/site-config";
 
@@ -193,14 +193,7 @@ export default function ComparePage() {
                   <th className="px-4 py-3 font-medium text-foreground">Feature</th>
                   {COLUMNS.map((col, i) => (
                     <th key={col} className={`px-4 py-3 text-center font-semibold ${i === 0 ? "bg-primary/5 text-primary" : ""}`}>
-                      {col === "OneSignal" ? (
-                        <span className="inline-flex items-center gap-1.5 justify-center">
-                          <OneSignalIcon className="size-4 shrink-0" />
-                          {col}
-                        </span>
-                      ) : (
-                        col
-                      )}
+                      {col}
                       {i === 0 && <span className="block text-xs font-normal text-muted-foreground">This project</span>}
                     </th>
                   ))}
@@ -236,8 +229,7 @@ export default function ComparePage() {
               {LIMITATIONS.map((item) => (
                 <Card key={item.name} className={item.name.startsWith("PushKit") ? "border-primary/50 bg-card shadow-sm" : undefined}>
                   <CardHeader>
-                    <CardTitle className="text-base flex items-center gap-2">
-                      {item.name === "OneSignal" && <OneSignalIcon className="size-4 shrink-0" />}
+                    <CardTitle className="text-base">
                       {item.name}
                     </CardTitle>
                   </CardHeader>
