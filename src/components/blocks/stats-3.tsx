@@ -6,25 +6,21 @@ const stats = [
     icon: Send,
     value: "≈130,000",
     label: "Pushes per day",
-    subtext: "40 pushes per queue batch",
   },
   {
     icon: Megaphone,
     value: "≈4,000,000",
     label: "Pushes per month",
-    subtext: "10,000 daily queue operations",
   },
   {
     icon: Users,
     value: "1,000,000+",
     label: "Subscribers stored",
-    subtext: "500 MB SQLite database limit",
   },
   {
     icon: Globe,
     value: "Unlimited",
     label: "Sites",
-    subtext: "Separate VAPID & settings",
   },
 ];
 
@@ -52,7 +48,7 @@ export default function StatsBlock() {
         </div>
 
         <dl className="mt-12 grid gap-4 sm:grid-cols-2 md:grid-cols-4">
-          {stats.map(({ icon: Icon, value, label, subtext }) => (
+          {stats.map(({ icon: Icon, value, label }) => (
             <div
               key={label}
               className="flex flex-col rounded-lg border border-border bg-card p-6 shadow-xs"
@@ -64,10 +60,6 @@ export default function StatsBlock() {
                 {value}
               </dt>
               <dd className="mt-1 text-sm font-medium text-muted-foreground">{label}</dd>
-              <div className="mt-4 flex items-center gap-1.5 text-xs text-muted-foreground">
-                <span className="size-1.5 rounded-full bg-emerald-500" />
-                <span>{subtext}</span>
-              </div>
             </div>
           ))}
         </dl>
