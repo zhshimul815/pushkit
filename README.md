@@ -20,7 +20,7 @@ These numbers come from Cloudflare's published free limits and PushKit's batchin
 | Pushes per month | ≈4,000,000 |
 | Subscribers stored | 1,000,000+ (500 MB D1 database, <500 bytes per subscriber row) |
 | Sites | Unlimited (sites are D1 rows with their own VAPID key pair) |
-| Images | 10 GB on R2, zero egress fees |
+| Images | Unlimited via public URLs or auto-fetched OpenGraph (zero cost) |
 | Login email | 100/day on Resend free plan — only codes, magic links, and invites use email |
 | Monthly cost | $0 |
 
@@ -30,7 +30,7 @@ Everything below is included in the install. No paid tiers, no feature gates.
 
 ### Campaign Composer
 
-Build a notification the way you publish a post. Paste a URL and **Fetch URL Metadata** fills the title, description, and image from the page's Open Graph tags. Edit the title and message body, set the destination URL, and the **UTM builder** appends source, medium, and campaign parameters automatically. The icon and hero image can be pasted as URLs or uploaded — uploads are stored in your R2 bucket. Add up to **two action buttons** (for example *Read* and *Later*), each with its own URL.
+Build a notification the way you publish a post. Paste a URL and **Fetch URL Metadata** fills the title, description, and image from the page's Open Graph tags. Edit the title and message body, set the destination URL, and the **UTM builder** appends source, medium, and campaign parameters automatically. The icon and hero image can be pasted directly as public URLs or auto-filled from page Open Graph metadata. Add up to **two action buttons** (for example *Read* and *Later*), each with its own URL.
 
 A **live preview** renders the notification in Android Chrome, Windows Desktop, and macOS styles as you type. When the campaign is ready: **Send Now** (queued and fanned out immediately), **Schedule** for a date and time, or **Save as Template**.
 

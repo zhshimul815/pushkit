@@ -43,9 +43,9 @@ const steps = [
     code: "npm run db:migrate:remote",
   },
   {
-    title: "Create the R2 bucket and the Queues",
-    body: "R2 stores notification icons and hero images. The queue carries campaign fan-out; the second queue is the dead-letter queue.",
-    code: "npx wrangler r2 bucket create pushkit-media && npx wrangler queues create pushkit-send && npx wrangler queues create pushkit-dlq",
+    title: "Create the Queues",
+    body: "The queue carries campaign fan-out; the second queue is the dead-letter queue. Notification icons and images use public URLs or auto-fetched OpenGraph tags (100% free, no credit card required).",
+    code: "npx wrangler queues create pushkit-send && npx wrangler queues create pushkit-dlq",
   },
   {
     title: "Set the variables in wrangler.toml",
@@ -90,8 +90,8 @@ export default function DeployPage() {
               Deploy PushKit on the Cloudflare Free Tier
             </h1>
             <p className="mt-4 max-w-2xl text-muted-foreground">
-              One Worker, one D1 database, one R2 bucket, one Queue. Total running cost is
-              $0/month inside the free limits below. Setup takes about 10 minutes.
+              One Worker, one D1 database, one Queue. Total running cost is
+              $0/month with zero credit card required. Setup takes about 10 minutes.
             </p>
             <dl className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-5">
               {CAPACITY_STATS.map((s) => (

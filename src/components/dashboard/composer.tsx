@@ -81,14 +81,6 @@ export function Composer({
     setStatus("Metadata loaded");
   }
 
-  async function upload(file: File, setter: (url: string) => void) {
-    const form = new FormData();
-    form.append("file", file);
-    const res = await fetch("/api/upload", { method: "POST", body: form });
-    const data = (await res.json()) as { url?: string; error?: string };
-    if (res.ok && data.url) setter(data.url);
-    else setStatus(data.error ?? "Upload failed (R2 required)");
-  }
 
   function buildPayload(action: "send" | "schedule" | "draft" | "template") {
     return {
@@ -237,14 +229,26 @@ export function Composer({
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label>Icon (URL or upload to R2)</Label>
-              <Input value={iconUrl} onChange={(e) => setIconUrl(e.target.value)} placeholder="https://…/icon.png" />
-              <Input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && upload(e.target.files[0], setIconUrl)} />
+              <Label>Icon (URL)</Label>
+              <Input
+                value={iconUrl}
+                onChange={(e) => setIconUrl(e.target.value)}
+                placeholder="https://example.com/icon.png"
+              />
+              <p className="text-xs text-muted-foreground">
+                Paste any public icon URL, or let Fetch URL Metadata fill it.
+              </p>
             </div>
             <div className="space-y-2">
-              <Label>Hero Image (URL or upload to R2)</Label>
-              <Input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="https://…/hero.jpg" />
-              <Input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && upload(e.target.files[0], setImageUrl)} />
+              <Label>Hero Image (URL)</Label>
+              <Input
+                value={imageUrl}
+                onChange={(e) => setImageUrl(e.target.value)}
+                placeholder="https://example.com/hero.jpg"
+              />
+              <p className="text-xs text-muted-foreground">
+                Paste any public image URL (WordPress, CDN, Unsplash), or auto-fetch.
+              </p>
             </div>
           </div>
 
