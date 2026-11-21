@@ -4,7 +4,7 @@ import { Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GITHUB_URL, MarketingFooter, MarketingHeader } from "@/components/marketing";
-import { CloudflareIcon, GitHubIcon } from "@/components/icons";
+import { CloudflareIcon, GitHubIcon, OneSignalIcon } from "@/components/icons";
 
 export const metadata: Metadata = {
   title: "Compare — PushKit vs OneSignal, PushEngage, LaraPush, Webpushr",
@@ -124,7 +124,14 @@ export default function ComparePage() {
                 <th className="px-4 py-3 font-medium" />
                 {COLUMNS.map((col, i) => (
                   <th key={col} className={`px-4 py-3 text-center font-semibold ${i === 0 ? "bg-primary/5" : ""}`}>
-                    {col}
+                    {col === "OneSignal" ? (
+                      <span className="inline-flex items-center gap-1.5 justify-center">
+                        <OneSignalIcon className="size-4 shrink-0" />
+                        {col}
+                      </span>
+                    ) : (
+                      col
+                    )}
                     {i === 0 && <span className="block text-xs font-normal text-muted-foreground">This project</span>}
                   </th>
                 ))}
@@ -164,7 +171,10 @@ export default function ComparePage() {
             {LIMITATIONS.map((item) => (
               <Card key={item.name} className={item.name.startsWith("PushKit") ? "border-primary/40" : undefined}>
                 <CardHeader>
-                  <CardTitle className="text-base">{item.name}</CardTitle>
+                  <CardTitle className="text-base flex items-center gap-2">
+                    {item.name === "OneSignal" && <OneSignalIcon className="size-4 shrink-0" />}
+                    {item.name}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ul className="list-disc space-y-2 pl-5 text-sm text-muted-foreground">

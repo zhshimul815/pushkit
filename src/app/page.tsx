@@ -22,7 +22,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GITHUB_URL, MarketingFooter, MarketingHeader } from "@/components/marketing";
 import { LandingDemo } from "@/components/landing-demo";
 import StatsBlock from "@/components/blocks/stats-3";
-import { CloudflareIcon, GitHubIcon } from "@/components/icons";
+import { CloudflareIcon, GitHubIcon, OneSignalIcon } from "@/components/icons";
 import { MacNotificationShowcase } from "@/components/mac-notification-showcase";
 
 /* ------------------------------------------------------------------ */
@@ -151,7 +151,7 @@ export default function LandingPage() {
             <GitHubIcon className="size-5 shrink-0" /> View on GitHub
           </Button>
           <Button size="lg" variant="outline" render={<Link href="/compare" />}>
-            Compare with OneSignal
+            <OneSignalIcon className="size-5 shrink-0" /> Compare with OneSignal
           </Button>
         </div>
         <p className="mt-4 text-sm text-muted-foreground">
@@ -206,7 +206,11 @@ export default function LandingPage() {
               <thead>
                 <tr className="border-b bg-secondary/50">
                   <th className="px-4 py-3 font-medium">Audience size</th>
-                  <th className="px-4 py-3 font-medium">OneSignal Growth</th>
+                  <th className="px-4 py-3 font-medium">
+                    <span className="inline-flex items-center gap-1.5">
+                      <OneSignalIcon className="size-4 shrink-0" /> OneSignal Growth
+                    </span>
+                  </th>
                   <th className="px-4 py-3 font-medium">PushKit (self-hosted)</th>
                   <th className="px-4 py-3 font-medium">Notes</th>
                 </tr>
