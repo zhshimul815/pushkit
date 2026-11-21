@@ -9,7 +9,12 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const user = await getCurrentUser();
+  let user = null;
+  try {
+    user = await getCurrentUser();
+  } catch (err) {
+    console.error("DashboardLayout user error:", err);
+  }
   if (!user) redirect("/login");
 
   return (

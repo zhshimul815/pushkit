@@ -5,18 +5,19 @@ import type { OverviewStats } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
-function Breakdown({ title, rows }: { title: string; rows: { name: string; count: number }[] }) {
-  const max = Math.max(1, ...rows.map((r) => r.count));
+function Breakdown({ title, rows }: { title: string; rows?: { name: string; count: number }[] }) {
+  const safeRows = rows ?? [];
+  const max = Math.max(1, ...safeRows.map((r) => r.count));
   return (
     <Card>
       <CardHeader>
         <CardTitle className="text-base">{title}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
-        {rows.length === 0 ? (
+        {safeRows.length === 0 ? (
           <p className="text-sm text-muted-foreground">No data yet</p>
         ) : (
-          rows.map((row) => (
+          safeRows.map((row) => (
             <div key={row.name}>
               <div className="flex justify-between text-sm">
                 <span>{row.name}</span>
@@ -58,14 +59,14 @@ export default async function OverviewPage() {
       ctr30: { sent: 0, clicks: 0 },
     };
   }
-  const ctr30 = stats.ctr30.sent > 0 ? Math.round((stats.ctr30.clicks / stats.ctr30.sent) * 1000) / 10 : 0;
-  const lowEngagement = stats.ctr30.sent > 5000 && ctr30 < 1;
+  const ctr30 = (stats?.ctr30?.sent ?? 0) > 0 ? Math.round(((stats?.ctr30?.clicks ?? 0) / (stats?.ctr30?.sent ?? 1)) * 1000) / 10 : 0;
+  const lowEngagement = (stats?.ctr30?.sent ?? 0) > 5000 && ctr30 < 1;
 
   const kpis = [
-    { label: "Total Subscribers", value: stats.totalSubscribers.toLocaleString() },
-    { label: "New Today", value: stats.newToday.toLocaleString() },
-    { label: "Notifications Sent", value: stats.notificationsSent.toLocaleString() },
-    { label: "Average CTR", value: `${stats.averageCtr}%` },
+    { label: "Total Subscribers", value: (stats?.totalSubscribers ?? 0).toLocaleString() },
+    { label: "New Today", value: (stats?.newToday ?? 0).toLocaleString() },
+    { label: "Notifications Sent", value: (stats?.notificationsSent ?? 0).toLocaleString() },
+    { label: "Average CTR", value: `${stats?.averageCtr ?? 0}%` },
   ];
 
   return (
@@ -90,7 +91,7 @@ export default async function OverviewPage() {
           <CardTitle className="text-base">Subscriber Growth &amp; Clicks</CardTitle>
         </CardHeader>
         <CardContent>
-          <OverviewChart series={stats.series} />
+          <OverviewChart series={stats?.series ?? []} />
         </CardContent>
       </Card>
       {lowEngagement ? (
@@ -100,7 +101,7 @@ export default async function OverviewPage() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              {stats.ctr30.sent.toLocaleString()} notifications sent in 30 days with a CTR under 1%.
+              {(stats?.ctr30?.sent ?? 0).toLocaleString()} notifications sent in 30 days with a CTR under 1%.
               Since October 2025, Chrome can automatically revoke notification permission for
               high-volume, low-engagement sites. Send the next campaign with{" "}
               <span className="font-medium text-foreground">Engaged subscribers only</span> in the
@@ -110,27 +111,27 @@ export default async function OverviewPage() {
         </Card>
       ) : null}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Breakdown title="Top Countries" rows={stats.countries} />
-        <Breakdown title="Devices" rows={stats.devices} />
-        <Breakdown title="Browsers" rows={stats.browsers} />
-        <Breakdown title="OS" rows={stats.os} />
+        <Breakdown title="Top Countries" rows={stats?.countries} />
+        <Breakdown title="Devices" rows={stats?.devices} />
+        <Breakdown title="Browsers" rows={stats?.browsers} />
+        <Breakdown title="OS" rows={stats?.os} />
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
-        <Breakdown title="Push Services (by endpoint)" rows={stats.services} />
+        <Breakdown title="Push Services (by endpoint)" rows={stats?.services} />
         <Card>
           <CardHeader>
             <CardTitle className="text-base">Prompt A/B Test</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
-            {stats.promptAb.a + stats.promptAb.b === 0 ? (
+            {(stats?.promptAb?.a ?? 0) + (stats?.promptAb?.b ?? 0) === 0 ? (
               <p className="text-muted-foreground">
                 No A/B data yet. Enable Prompt A/B Test in a site&apos;s settings to split new
                 subscribers between two prompt texts.
               </p>
             ) : (
               <>
-                <p>Variant A opt-ins: <span className="font-medium tabular-nums">{stats.promptAb.a.toLocaleString()}</span></p>
-                <p>Variant B opt-ins: <span className="font-medium tabular-nums">{stats.promptAb.b.toLocaleString()}</span></p>
+                <p>Variant A opt-ins: <span className="font-medium tabular-nums">{(stats?.promptAb?.a ?? 0).toLocaleString()}</span></p>
+                <p>Variant B opt-ins: <span className="font-medium tabular-nums">{(stats?.promptAb?.b ?? 0).toLocaleString()}</span></p>
                 <p className="text-muted-foreground">
                   Variants are assigned randomly per visitor, so the split compares opt-in rates directly.
                 </p>

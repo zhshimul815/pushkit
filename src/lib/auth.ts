@@ -150,17 +150,22 @@ export async function clearSessionCookie(): Promise<void> {
 
 /** Current user from the session cookie, with sliding expiration. Null when logged out. */
 export async function getCurrentUser(): Promise<User | null> {
-  const jar = await cookies();
-  const token = jar.get(SESSION_COOKIE)?.value;
-  if (!token) return null;
-  const store = await getStore();
-  const session = await store.getSession(await hashToken(`session:${token}`));
-  if (!session || session.expires_at < Date.now()) return null;
-  // Slide expiration when the session is older than a day.
-  if (Date.now() - session.last_seen_at > 24 * 60 * 60 * 1000) {
-    await store.touchSession(session.id, Date.now() + SESSION_TTL_MS);
+  try {
+    const jar = await cookies();
+    const token = jar.get(SESSION_COOKIE)?.value;
+    if (!token) return null;
+    const store = await getStore();
+    const session = await store.getSession(await hashToken(`session:${token}`));
+    if (!session || session.expires_at < Date.now()) return null;
+    // Slide expiration when the session is older than a day.
+    if (Date.now() - session.last_seen_at > 24 * 60 * 60 * 1000) {
+      await store.touchSession(session.id, Date.now() + SESSION_TTL_MS);
+    }
+    return session.user;
+  } catch (err) {
+    console.error("getCurrentUser error:", err);
+    return null;
   }
-  return session.user;
 }
 
 export async function requireUser(): Promise<User> {

@@ -29,11 +29,25 @@ interface Env extends CloudflareEnv {
 }
 
 const worker = {
-  fetch: (
-    openNextWorker as {
-      fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response>;
+  fetch: async (request: Request, env: unknown, ctx: unknown): Promise<Response> => {
+    try {
+      return await (
+        openNextWorker as {
+          fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response>;
+        }
+      ).fetch(request, env, ctx);
+    } catch (err: unknown) {
+      const e = err as Error;
+      console.error("PushKit Worker fetch exception:", e);
+      return new Response(
+        `PushKit Application Error\n\n${e?.name || "Error"}: ${e?.message || String(e)}\n\n${e?.stack || ""}`,
+        {
+          status: 500,
+          headers: { "content-type": "text/plain; charset=utf-8" },
+        }
+      );
     }
-  ).fetch,
+  },
 
   async queue(batch: { messages: QueueMessage[] }, env: Env): Promise<void> {
     const store = new D1Store(env.DB);
