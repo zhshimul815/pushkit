@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import { DashboardNav } from "@/components/dashboard/nav";
 import { getCurrentUser } from "@/lib/auth";
 
@@ -15,7 +14,20 @@ export default async function DashboardLayout({
   } catch (err) {
     console.error("DashboardLayout user error:", err);
   }
-  if (!user) redirect("/login");
+
+  if (!user) {
+    return (
+      <div className="flex min-h-svh flex-col items-center justify-center p-4 text-center">
+        <p className="text-sm text-muted-foreground">Session expired. Redirecting to login...</p>
+        <meta httpEquiv="refresh" content="0;url=/login?error=session-expired" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: 'window.location.replace("/login?error=session-expired");',
+          }}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-svh bg-background text-foreground">
