@@ -2,6 +2,7 @@ name = "pushkit"
 main = "cloudflare-worker.ts"
 compatibility_date = "2025-09-01"
 compatibility_flags = ["nodejs_compat"]
+keep_vars = true
 
 # --- D1 (SQLite) — 100,000 rows written / day on Free ---
 [[d1_databases]]
@@ -44,15 +45,17 @@ crons = ["*/5 * * * *", "0 3 * * *"]
 binding = "ASSETS"
 directory = ".open-next/assets"
 
-[vars]
-# Public base URL of this deployment, e.g. https://push.example.com
-NEXT_PUBLIC_APP_URL = "http://localhost:3000"
-# Owner bootstrap email. First login with this email creates the owner account.
-OWNER_EMAIL = "owner@example.com"
-# From address for OTP / magic link email.
-EMAIL_FROM = "PushKit <auth@example.com>"
-# VAPID subject (mailto: or https: URL) used as JWT `sub` fallback per site.
-VAPID_SUBJECT = "mailto:owner@example.com"
+# --- Variables and Secrets ---
+# Manage variables in the Cloudflare Dashboard (Settings > Variables and secrets).
+# keep_vars = true above ensures Wrangler never overwrites or deletes dashboard variables on deploy.
+# Variables:
+#   NEXT_PUBLIC_APP_URL = "https://your-domain.com"
+#   OWNER_EMAIL         = "your-email@example.com"
+#   EMAIL_FROM          = "PushKit <onboarding@resend.dev>" (or your custom domain)
+#   VAPID_SUBJECT       = "mailto:your-email@example.com"
+# Secrets:
+#   RESEND_API_KEY      = "re_..." (Resend API key)
+#   SESSION_SECRET      = (optional entropy string)
 
 # Secrets — set with `wrangler secret put <NAME>`, never commit values:
 #   RESEND_API_KEY   — Resend API key for OTP / magic link email
