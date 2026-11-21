@@ -68,7 +68,6 @@ export function LandingDemo() {
             <span className="size-2.5 rounded-full bg-green-400" />
             <span className="ml-3 text-xs text-muted-foreground">pushkit.your-domain.com/dashboard</span>
           </div>
-          <Badge variant="secondary">Sample data — live interface, view only</Badge>
         </div>
 
         <div className="flex">
