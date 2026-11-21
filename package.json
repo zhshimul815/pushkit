@@ -50,6 +50,9 @@
     "typescript": "^5",
     "wrangler": "^4.166.0"
   },
+  "overrides": {
+    "minimatch": ">=11.0.1"
+  },
   "description": "PushKit — free, open-source, self-hosted web push notification platform for the Cloudflare Free Tier.",
   "license": "ELv2"
 }
