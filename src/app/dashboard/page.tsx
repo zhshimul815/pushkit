@@ -1,6 +1,19 @@
+import dynamicImport from "next/dynamic";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { OverviewChart } from "@/components/dashboard/overview-chart";
 import { getStore } from "@/lib/store";
+import type { OverviewStats } from "@/lib/types";
+
+const OverviewChart = dynamicImport(
+  () => import("@/components/dashboard/overview-chart").then((mod) => mod.OverviewChart),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-[280px] w-full items-center justify-center text-sm text-muted-foreground">
+        Loading chart...
+      </div>
+    ),
+  }
+);
 
 export const dynamic = "force-dynamic";
 
@@ -36,8 +49,27 @@ function Breakdown({ title, rows }: { title: string; rows: { name: string; count
 }
 
 export default async function OverviewPage() {
-  const store = await getStore();
-  const stats = await store.overview();
+  let stats: OverviewStats;
+  try {
+    const store = await getStore();
+    stats = await store.overview();
+  } catch (err) {
+    console.error("Dashboard overview failed:", err);
+    stats = {
+      totalSubscribers: 0,
+      newToday: 0,
+      notificationsSent: 0,
+      averageCtr: 0,
+      series: [],
+      countries: [],
+      devices: [],
+      browsers: [],
+      os: [],
+      services: [],
+      promptAb: { a: 0, b: 0 },
+      ctr30: { sent: 0, clicks: 0 },
+    };
+  }
   const ctr30 = stats.ctr30.sent > 0 ? Math.round((stats.ctr30.clicks / stats.ctr30.sent) * 1000) / 10 : 0;
   const lowEngagement = stats.ctr30.sent > 5000 && ctr30 < 1;
 

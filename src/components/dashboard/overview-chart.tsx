@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import {
   Area,
   AreaChart,
@@ -25,8 +25,24 @@ const RANGES = [
   { label: "90d", days: 90 },
 ] as const;
 
+const emptySubscribe = () => () => {};
+
 export function OverviewChart({ series }: { series: Point[] }) {
+  const isClient = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
   const [days, setDays] = useState<number>(30);
+
+  if (!isClient) {
+    return (
+      <div className="flex h-[280px] w-full items-center justify-center text-sm text-muted-foreground">
+        Loading chart...
+      </div>
+    );
+  }
+
   const data = series.slice(-days);
 
   return (

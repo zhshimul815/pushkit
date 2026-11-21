@@ -638,21 +638,26 @@ export class D1Store implements Store {
     await this.db.prepare("DELETE FROM settings WHERE key = ?").bind(key).run();
   }
   async overview(): Promise<OverviewStats> {
-    const total = await this.countSubscribers();
-    const todayRow = await this.db.prepare("SELECT COALESCE(SUM(new_subscribers),0) AS c FROM daily_stats WHERE day = ?").bind(dayKey(Date.now())).first<Row>();
-    const sentRow = await this.db.prepare("SELECT COALESCE(SUM(sent_count),0) AS s, COALESCE(SUM(click_count),0) AS c FROM campaigns").first<Row>();
+    const total = await this.countSubscribers().catch(() => 0);
+    const todayRow = await this.db.prepare("SELECT COALESCE(SUM(new_subscribers),0) AS c FROM daily_stats WHERE day = ?").bind(dayKey(Date.now())).first<Row>().catch(() => null);
+    const sentRow = await this.db.prepare("SELECT COALESCE(SUM(sent_count),0) AS s, COALESCE(SUM(click_count),0) AS c FROM campaigns").first<Row>().catch(() => null);
     const sent = num(sentRow?.s);
     const clicks = num(sentRow?.c);
-    const { results: seriesRows } = await this.db.prepare(
+    const seriesRes = await this.db.prepare(
       "SELECT day, SUM(new_subscribers) AS subs, SUM(sent) AS sent, SUM(clicks) AS clicks FROM daily_stats GROUP BY day ORDER BY day DESC LIMIT 90",
-    ).all<Row>();
+    ).all<Row>().catch(() => ({ results: [] as Row[] }));
+    const seriesRows = seriesRes?.results ?? [];
     const breakdown = async (col: string) => {
-      const { results } = await this.db.prepare(
-        `SELECT COALESCE(${col}, 'Unknown') AS name, COUNT(*) AS c FROM subscribers GROUP BY ${col} ORDER BY c DESC LIMIT 10`,
-      ).all<Row>();
-      return results.map((r) => ({ name: String(r.name), count: num(r.c) }));
+      try {
+        const res = await this.db.prepare(
+          `SELECT COALESCE(${col}, 'Unknown') AS name, COUNT(*) AS c FROM subscribers GROUP BY ${col} ORDER BY c DESC LIMIT 10`,
+        ).all<Row>();
+        return (res?.results ?? []).map((r) => ({ name: String(r.name), count: num(r.c) }));
+      } catch {
+        return [];
+      }
     };
-    const { results: svcRows } = await this.db.prepare(
+    const svcRes = await this.db.prepare(
       `SELECT CASE
          WHEN endpoint LIKE 'https://fcm.googleapis.com/%' THEN 'Chrome / FCM'
          WHEN endpoint LIKE 'https://web.push.apple.com/%' THEN 'Apple'
@@ -660,22 +665,23 @@ export class D1Store implements Store {
          WHEN endpoint LIKE 'https://updates.push.services.mozilla.com/%' THEN 'Firefox / Mozilla'
          ELSE 'Other' END AS name, COUNT(*) AS c
        FROM subscribers GROUP BY name ORDER BY c DESC`,
-    ).all<Row>();
-    const abRow = await this.db.prepare("SELECT COALESCE(SUM(subs_a),0) AS a, COALESCE(SUM(subs_b),0) AS b FROM daily_stats").first<Row>();
+    ).all<Row>().catch(() => ({ results: [] as Row[] }));
+    const svcRows = svcRes?.results ?? [];
+    const abRow = await this.db.prepare("SELECT COALESCE(SUM(subs_a),0) AS a, COALESCE(SUM(subs_b),0) AS b FROM daily_stats").first<Row>().catch(() => null);
     const ctrRow = await this.db.prepare(
       "SELECT COALESCE(SUM(sent),0) AS s, COALESCE(SUM(clicks),0) AS c FROM daily_stats WHERE day >= ?",
-    ).bind(dayKey(Date.now() - 30 * 864e5)).first<Row>();
+    ).bind(dayKey(Date.now() - 30 * 864e5)).first<Row>().catch(() => null);
     return {
       totalSubscribers: total,
       newToday: num(todayRow?.c),
       notificationsSent: sent,
       averageCtr: sent > 0 ? Math.round((clicks / sent) * 1000) / 10 : 0,
-      series: seriesRows.reverse().map((r) => ({ day: String(r.day), subscribers: num(r.subs), sent: num(r.sent), clicks: num(r.clicks) })),
+      series: (seriesRows ?? []).slice().reverse().map((r) => ({ day: String(r.day), subscribers: num(r.subs), sent: num(r.sent), clicks: num(r.clicks) })),
       countries: await breakdown("country"),
       devices: await breakdown("device"),
       browsers: await breakdown("browser"),
       os: await breakdown("os"),
-      services: svcRows.map((r) => ({ name: String(r.name), count: num(r.c) })),
+      services: (svcRows ?? []).map((r) => ({ name: String(r.name), count: num(r.c) })),
       promptAb: { a: num(abRow?.a), b: num(abRow?.b) },
       ctr30: { sent: num(ctrRow?.s), clicks: num(ctrRow?.c) },
     };
