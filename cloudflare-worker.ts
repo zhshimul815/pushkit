@@ -30,22 +30,56 @@ interface Env extends CloudflareEnv {
 
 const worker = {
   fetch: async (request: Request, env: unknown, ctx: unknown): Promise<Response> => {
+    const errorLogs: string[] = [];
+    const origError = console.error;
+    console.error = (...args: unknown[]) => {
+      try {
+        errorLogs.push(
+          args
+            .map((a) =>
+              a instanceof Error
+                ? `${a.name}: ${a.message}\n${a.stack}`
+                : typeof a === "object"
+                  ? JSON.stringify(a)
+                  : String(a)
+            )
+            .join(" ")
+        );
+      } catch {
+        // ignore format error
+      }
+      origError.apply(console, args as [unknown, ...unknown[]]);
+    };
+
     try {
-      return await (
+      const response = await (
         openNextWorker as {
           fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response>;
         }
       ).fetch(request, env, ctx);
+
+      // If Next.js returned a 500 error and logged error details, surface them in response for quick diagnosis.
+      if (response.status === 500 && errorLogs.length > 0) {
+        return new Response(
+          `PushKit Server Error Details:\n\n${errorLogs.join("\n\n---\n\n")}`,
+          {
+            status: 500,
+            headers: { "content-type": "text/plain; charset=utf-8" },
+          }
+        );
+      }
+      return response;
     } catch (err: unknown) {
       const e = err as Error;
-      console.error("PushKit Worker fetch exception:", e);
       return new Response(
-        `PushKit Application Error\n\n${e?.name || "Error"}: ${e?.message || String(e)}\n\n${e?.stack || ""}`,
+        `PushKit Application Error\n\n${e?.name || "Error"}: ${e?.message || String(e)}\n\n${e?.stack || ""}\n\nLogs:\n${errorLogs.join("\n")}`,
         {
           status: 500,
           headers: { "content-type": "text/plain; charset=utf-8" },
         }
       );
+    } finally {
+      console.error = origError;
     }
   },
 
