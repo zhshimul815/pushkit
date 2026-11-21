@@ -2,11 +2,9 @@ import Link from "next/link";
 import {
   BarChart3,
   Bell,
-  Code2,
   Database,
   FileCode2,
   Globe,
-  KeyRound,
   Layers,
   Lock,
   Megaphone,
@@ -24,6 +22,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GITHUB_URL, MarketingFooter, MarketingHeader } from "@/components/marketing";
 import { LandingDemo } from "@/components/landing-demo";
 import StatsBlock from "@/components/blocks/stats-3";
+import { CloudflareIcon, GitHubIcon } from "@/components/icons";
 
 /* ------------------------------------------------------------------ */
 /* Content                                                             */
@@ -145,10 +144,10 @@ export default function LandingPage() {
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Button size="lg" render={<Link href="/deploy" />}>
-            Deploy on Cloudflare — Free
+            <CloudflareIcon className="size-5 shrink-0" /> Deploy on Cloudflare — Free
           </Button>
-          <Button size="lg" variant="outline" render={<a href={GITHUB_URL} />}>
-            <Code2 /> View on GitHub
+          <Button size="lg" variant="outline" render={<a href={GITHUB_URL} target="_blank" rel="noreferrer" />}>
+            <GitHubIcon className="size-5 shrink-0" /> View on GitHub
           </Button>
           <Button size="lg" variant="outline" render={<Link href="/compare" />}>
             Compare with OneSignal
@@ -358,10 +357,10 @@ export default function LandingPage() {
             </p>
             <div className="mt-5 flex flex-wrap justify-center gap-3">
               <Button size="lg" render={<Link href="/deploy" />}>
-                <KeyRound /> Open the Deploy Guide
+                <CloudflareIcon className="size-5 shrink-0" /> Open the Deploy Guide
               </Button>
-              <Button size="lg" variant="outline" render={<a href={GITHUB_URL} />}>
-                <Code2 /> GitHub
+              <Button size="lg" variant="outline" render={<a href={GITHUB_URL} target="_blank" rel="noreferrer" />}>
+                <GitHubIcon className="size-5 shrink-0" /> GitHub
               </Button>
             </div>
           </div>

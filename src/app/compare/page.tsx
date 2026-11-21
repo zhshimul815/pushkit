@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Check, Code2, X } from "lucide-react";
+import { Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GITHUB_URL, MarketingFooter, MarketingHeader } from "@/components/marketing";
+import { CloudflareIcon, GitHubIcon } from "@/components/icons";
 
 export const metadata: Metadata = {
   title: "Compare — PushKit vs OneSignal, PushEngage, LaraPush, Webpushr",
@@ -227,10 +228,10 @@ export default function ComparePage() {
         </div>
         <div className="mt-10 flex flex-wrap gap-3">
           <Button size="lg" render={<Link href="/deploy" />}>
-            Deploy PushKit — Free
+            <CloudflareIcon className="size-5 shrink-0" /> Deploy PushKit — Free
           </Button>
-          <Button size="lg" variant="outline" render={<a href={GITHUB_URL} />}>
-            <Code2 /> View on GitHub
+          <Button size="lg" variant="outline" render={<a href={GITHUB_URL} target="_blank" rel="noreferrer" />}>
+            <GitHubIcon className="size-5 shrink-0" /> View on GitHub
           </Button>
         </div>
       </section>
