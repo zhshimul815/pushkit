@@ -32,7 +32,7 @@ export function MarketingHeader() {
         </nav>
         <div className="flex items-center gap-2">
           <Button size="sm" variant="outline" className="hidden sm:inline-flex" render={<Link href="/deploy" />}>Deploy Guide</Button>
-          <Button size="sm" render={<Link href="/login" />}>Admin Login</Button>
+          <Button size="sm" render={<Link href="/login" />}>Dashboard</Button>
         </div>
       </div>
     </header>

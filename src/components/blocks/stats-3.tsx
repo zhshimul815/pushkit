@@ -30,7 +30,7 @@ const stats = [
 
 export default function StatsBlock() {
   return (
-    <section className="flex w-full items-center justify-center border-y bg-secondary/30 px-6 py-16 text-foreground">
+    <section id="capacity" className="flex w-full items-center justify-center border-y bg-secondary/30 px-6 py-16 text-foreground">
       <div className="mx-auto w-full max-w-5xl">
         <div className="mx-auto max-w-2xl text-center">
           <span className="text-xs font-semibold tracking-widest text-muted-foreground uppercase">

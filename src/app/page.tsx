@@ -161,74 +161,74 @@ export default function LandingPage() {
       {/* Capacity stats */}
       <StatsBlock />
 
-      {/* The cost problem — actual published pricing */}
-      <section className="mx-auto max-w-6xl px-4 py-16">
+      {/* Live product demo — real dashboard code, sample data */}
+      <section id="product" className="mx-auto max-w-6xl px-4 py-16">
         <div className="max-w-2xl">
-          <h2 className="text-3xl font-bold tracking-tight">The problem: success is what gets expensive</h2>
+          <h2 className="text-3xl font-bold tracking-tight">This is the actual dashboard</h2>
           <p className="mt-3 text-muted-foreground">
-            SaaS push pricing scales with your subscriber count, so the bill grows exactly when
-            your audience does. OneSignal&apos;s published Growth pricing is $19/month plus
-            $0.004 per subscriber — and its free plan stops at 10,000 subscribers per send.
-            PushEngage&apos;s free plan stops at 200. Here is what that math does:
+            Not a screenshot and not a mockup — the panel below is rendered live from the same
+            dashboard components PushKit ships, filled with sample data from a fictional
+            publisher (48,214 subscribers). It is view-only; deploy PushKit to run it on your
+            own sites.
           </p>
         </div>
-        <div className="mt-8 overflow-x-auto rounded-lg border">
-          <table className="w-full min-w-[560px] text-left text-sm">
-            <thead>
-              <tr className="border-b bg-secondary/50">
-                <th className="px-4 py-3 font-medium">Audience size</th>
-                <th className="px-4 py-3 font-medium">OneSignal Growth</th>
-                <th className="px-4 py-3 font-medium">PushKit (self-hosted)</th>
-                <th className="px-4 py-3 font-medium">Notes</th>
-              </tr>
-            </thead>
-            <tbody>
-              {COST_ROWS.map((row) => (
-                <tr key={row.subs} className="border-b last:border-0">
-                  <td className="px-4 py-3 font-medium">{row.subs}</td>
-                  <td className="px-4 py-3">{row.onesignal}</td>
-                  <td className="px-4 py-3 font-semibold">$0 / month</td>
-                  <td className="px-4 py-3 text-muted-foreground">{row.note}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="mt-8">
+          <LandingDemo />
         </div>
-        <p className="mt-3 text-xs text-muted-foreground">
-          OneSignal figures from its published pricing page, checked November 2026. PushKit at
-          1,000,000 subscribers assumes sends paced within the free daily delivery capacity
-          (≈130,000/day) or the $5 Workers Paid plan.{" "}
-          <Link href="/compare" className="underline">Full comparison →</Link>
-        </p>
+        <div className="mt-8 grid gap-4 sm:grid-cols-3">
+          {[
+            { icon: Megaphone, text: "Composer with URL metadata fetch, UTM builder, action buttons and device previews" },
+            { icon: Users, text: "Subscriber list with country, browser, OS, device, tags — searchable, filterable, CSV export" },
+            { icon: Layers, text: "Campaign history with Sent, Clicks and CTR % on every send, plus reusable templates" },
+          ].map((item) => (
+            <div key={item.text} className="flex items-start gap-3 rounded-lg border bg-background p-4">
+              <item.icon className="mt-0.5 size-5 shrink-0" />
+              <p className="text-sm">{item.text}</p>
+            </div>
+          ))}
+        </div>
       </section>
 
-      {/* Live product demo — real dashboard code, sample data */}
-      <section id="product" className="border-y bg-secondary/40">
+      {/* The cost problem — actual published pricing */}
+      <section className="border-y bg-secondary/40">
         <div className="mx-auto max-w-6xl px-4 py-16">
           <div className="max-w-2xl">
-            <h2 className="text-3xl font-bold tracking-tight">This is the actual dashboard</h2>
+            <h2 className="text-3xl font-bold tracking-tight">The problem: success is what gets expensive</h2>
             <p className="mt-3 text-muted-foreground">
-              Not a screenshot and not a mockup — the panel below is rendered live from the same
-              dashboard components PushKit ships, filled with sample data from a fictional
-              publisher (48,214 subscribers). It is view-only; deploy PushKit to run it on your
-              own sites.
+              SaaS push pricing scales with your subscriber count, so the bill grows exactly when
+              your audience does. OneSignal&apos;s published Growth pricing is $19/month plus
+              $0.004 per subscriber — and its free plan stops at 10,000 subscribers per send.
+              PushEngage&apos;s free plan stops at 200. Here is what that math does:
             </p>
           </div>
-          <div className="mt-8">
-            <LandingDemo />
+          <div className="mt-8 overflow-x-auto rounded-lg border bg-background">
+            <table className="w-full min-w-[560px] text-left text-sm">
+              <thead>
+                <tr className="border-b bg-secondary/50">
+                  <th className="px-4 py-3 font-medium">Audience size</th>
+                  <th className="px-4 py-3 font-medium">OneSignal Growth</th>
+                  <th className="px-4 py-3 font-medium">PushKit (self-hosted)</th>
+                  <th className="px-4 py-3 font-medium">Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {COST_ROWS.map((row) => (
+                  <tr key={row.subs} className="border-b last:border-0">
+                    <td className="px-4 py-3 font-medium">{row.subs}</td>
+                    <td className="px-4 py-3">{row.onesignal}</td>
+                    <td className="px-4 py-3 font-semibold">$0 / month</td>
+                    <td className="px-4 py-3 text-muted-foreground">{row.note}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-          <div className="mt-8 grid gap-4 sm:grid-cols-3">
-            {[
-              { icon: Megaphone, text: "Composer with URL metadata fetch, UTM builder, action buttons and device previews" },
-              { icon: Users, text: "Subscriber list with country, browser, OS, device, tags — searchable, filterable, CSV export" },
-              { icon: Layers, text: "Campaign history with Sent, Clicks and CTR % on every send, plus reusable templates" },
-            ].map((item) => (
-              <div key={item.text} className="flex items-start gap-3 rounded-lg border bg-background p-4">
-                <item.icon className="mt-0.5 size-5 shrink-0" />
-                <p className="text-sm">{item.text}</p>
-              </div>
-            ))}
-          </div>
+          <p className="mt-3 text-xs text-muted-foreground">
+            OneSignal figures from its published pricing page, checked November 2026. PushKit at
+            1,000,000 subscribers assumes sends paced within the free daily delivery capacity
+            (≈130,000/day) or the $5 Workers Paid plan.{" "}
+            <Link href="/compare" className="underline">Full comparison →</Link>
+          </p>
         </div>
       </section>
 

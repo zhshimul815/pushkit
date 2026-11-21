@@ -7,7 +7,7 @@ const NAV_LINKS = [
   { label: "Deploy Guide", href: "/deploy" },
   { label: "Compare", href: "/compare" },
   { label: "GitHub", href: GITHUB_URL, external: true },
-  { label: "Admin Login", href: "/login" },
+  { label: "Dashboard", href: "/login" },
 ];
 
 export default function FooterBlock() {
