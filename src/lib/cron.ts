@@ -76,8 +76,12 @@ export async function pollRssFeeds(store: Store): Promise<number> {
 
 export async function runCron(store: Store, cronExpression: string): Promise<{ scheduled: number; rss: number; purged: number }> {
   if (cronExpression === "0 3 * * *") {
-    const purged = await store.purgeExpiredSubscribers(180 * 24 * 60 * 60 * 1000);
-    return { scheduled: 0, rss: 0, purged };
+    const [purged, scheduled, rss] = await Promise.all([
+      store.purgeExpiredSubscribers(180 * 24 * 60 * 60 * 1000),
+      runScheduledCampaigns(store),
+      pollRssFeeds(store),
+    ]);
+    return { scheduled, rss, purged };
   }
   const [scheduled, rss] = await Promise.all([
     runScheduledCampaigns(store),

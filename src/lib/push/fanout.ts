@@ -47,11 +47,12 @@ export async function enqueueCampaign(store: Store, campaign: Campaign): Promise
   const batches = chunk(subscriberIds, BATCH_SIZE);
   const env = await getEnv();
   if (env.PUSH_QUEUE) {
-    await env.PUSH_QUEUE.sendBatch(
-      batches.map((ids) => ({
-        body: { campaignId: campaign.id, siteId: campaign.site_id, subscriberIds: ids } satisfies PushBatchMessage,
-      })),
-    );
+    const queueMessages = batches.map((ids) => ({
+      body: { campaignId: campaign.id, siteId: campaign.site_id, subscriberIds: ids } satisfies PushBatchMessage,
+    }));
+    for (const group of chunk(queueMessages, 100)) {
+      await env.PUSH_QUEUE.sendBatch(group);
+    }
   } else if (batches.length) {
     await deliverBatch(store, {
       campaignId: campaign.id,

@@ -399,14 +399,20 @@ export class D1Store implements Store {
     let inserted = 0;
     let skipped = 0;
     const now = Date.now();
-    for (const row of rows) {
-      const existing = await this.db.prepare("SELECT id FROM subscribers WHERE endpoint = ?").bind(row.endpoint).first<Row>();
-      if (existing) { skipped++; continue; }
-      await this.db.prepare(
-        `INSERT INTO subscribers (id, site_id, endpoint, p256dh, auth, created_at, last_seen_at, deliverable, source, import_source)
-         VALUES (?, ?, ?, ?, ?, ?, ?, 0, 'import', ?)`,
-      ).bind(randomId(), siteId, row.endpoint, row.p256dh, row.auth, now, now, importSource).run();
-      inserted++;
+    const insertStmt = this.db.prepare(
+      `INSERT OR IGNORE INTO subscribers (id, site_id, endpoint, p256dh, auth, created_at, last_seen_at, deliverable, source, import_source)
+       VALUES (?, ?, ?, ?, ?, ?, ?, 0, 'import', ?)`
+    );
+    for (let i = 0; i < rows.length; i += 50) {
+      const slice = rows.slice(i, i + 50);
+      const stmts = slice.map((row) =>
+        insertStmt.bind(randomId(), siteId, row.endpoint, row.p256dh, row.auth, now, now, importSource)
+      );
+      const batchRes = (await this.db.batch(stmts)) as { meta?: { changes?: number } }[];
+      for (const res of batchRes) {
+        if ((res?.meta?.changes ?? 0) > 0) inserted++;
+        else skipped++;
+      }
     }
     return { inserted, skipped };
   }
@@ -442,9 +448,25 @@ export class D1Store implements Store {
       `SELECT * FROM subscribers ${clause} ORDER BY created_at DESC LIMIT ? OFFSET ?`,
     ).bind(...values, opts.limit ?? 50, opts.offset ?? 0).all<Row>();
     const rows = results.map(mapSubscriber);
-    for (const row of rows) {
-      const { results: tagRows } = await this.db.prepare("SELECT key, value FROM subscriber_tags WHERE subscriber_id = ?").bind(row.id).all<Row>();
-      row.tags = Object.fromEntries(tagRows.map((t) => [String(t.key), String(t.value)]));
+    if (rows.length > 0) {
+      const ids = rows.map((r) => r.id);
+      const placeholders = ids.map(() => "?").join(",");
+      const { results: tagRows } = await this.db.prepare(
+        `SELECT subscriber_id, key, value FROM subscriber_tags WHERE subscriber_id IN (${placeholders})`
+      ).bind(...ids).all<Row>();
+      const tagMap = new Map<string, Record<string, string>>();
+      for (const t of tagRows) {
+        const subId = String(t.subscriber_id);
+        let tags = tagMap.get(subId);
+        if (!tags) {
+          tags = {};
+          tagMap.set(subId, tags);
+        }
+        tags[String(t.key)] = String(t.value);
+      }
+      for (const row of rows) {
+        row.tags = tagMap.get(row.id) ?? {};
+      }
     }
     return { rows, total: num(totalRow?.c) };
   }
@@ -474,14 +496,17 @@ export class D1Store implements Store {
       where.push("s.last_seen_at <= ? AND s.created_at <= ?");
       values.push(now - audience.inactiveDays * 864e5, now - audience.inactiveDays * 864e5);
     }
-    let join = "";
     if (audience.tagKey) {
-      join = "JOIN subscriber_tags t ON t.subscriber_id = s.id AND t.key = ?";
-      values.push(audience.tagKey);
-      if (audience.tagValue) { join += " AND t.value = ?"; values.push(audience.tagValue); }
+      if (audience.tagValue) {
+        where.push("s.id IN (SELECT subscriber_id FROM subscriber_tags WHERE key = ? AND value = ?)");
+        values.push(audience.tagKey, audience.tagValue);
+      } else {
+        where.push("s.id IN (SELECT subscriber_id FROM subscriber_tags WHERE key = ?)");
+        values.push(audience.tagKey);
+      }
     }
     const { results } = await this.db.prepare(
-      `SELECT s.id FROM subscribers s ${join} WHERE ${where.join(" AND ")}`,
+      `SELECT s.id FROM subscribers s WHERE ${where.join(" AND ")}`,
     ).bind(...values).all<Row>();
     return results.map((r) => String(r.id));
   }
@@ -671,26 +696,36 @@ export class D1Store implements Store {
     const ctrRow = await this.db.prepare(
       "SELECT COALESCE(SUM(sent),0) AS s, COALESCE(SUM(clicks),0) AS c FROM daily_stats WHERE day >= ?",
     ).bind(dayKey(Date.now() - 30 * 864e5)).first<Row>().catch(() => null);
+    const [countries, devices, browsers, os] = await Promise.all([
+      breakdown("country"),
+      breakdown("device"),
+      breakdown("browser"),
+      breakdown("os"),
+    ]);
     return {
       totalSubscribers: total,
       newToday: num(todayRow?.c),
       notificationsSent: sent,
       averageCtr: sent > 0 ? Math.round((clicks / sent) * 1000) / 10 : 0,
       series: (seriesRows ?? []).slice().reverse().map((r) => ({ day: String(r.day), subscribers: num(r.subs), sent: num(r.sent), clicks: num(r.clicks) })),
-      countries: await breakdown("country"),
-      devices: await breakdown("device"),
-      browsers: await breakdown("browser"),
-      os: await breakdown("os"),
+      countries,
+      devices,
+      browsers,
+      os,
       services: (svcRows ?? []).map((r) => ({ name: String(r.name), count: num(r.c) })),
       promptAb: { a: num(abRow?.a), b: num(abRow?.b) },
       ctr30: { sent: num(ctrRow?.s), clicks: num(ctrRow?.c) },
     };
   }
   async exportSubscribersCsv(siteId?: string) {
-    const { rows } = await this.listSubscribers({ siteId, limit: 100000 });
+    const { results } = siteId
+      ? await this.db.prepare("SELECT id, site_id, country, browser, os, device, page_url, created_at FROM subscribers WHERE site_id = ? ORDER BY created_at DESC LIMIT 100000").bind(siteId).all<Row>()
+      : await this.db.prepare("SELECT id, site_id, country, browser, os, device, page_url, created_at FROM subscribers ORDER BY created_at DESC LIMIT 100000").all<Row>();
     const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
     const lines = ["id,site_id,country,browser,os,device,page_url,created_at"];
-    for (const r of rows) lines.push([r.id, r.site_id, r.country, r.browser, r.os, r.device, r.page_url, new Date(r.created_at).toISOString()].map(esc).join(","));
+    for (const r of results) {
+      lines.push([r.id, r.site_id, r.country, r.browser, r.os, r.device, r.page_url, new Date(num(r.created_at)).toISOString()].map(esc).join(","));
+    }
     return lines.join("\n");
   }
 }

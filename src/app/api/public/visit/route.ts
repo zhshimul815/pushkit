@@ -12,22 +12,30 @@ export async function OPTIONS(request: Request) {
  * win-back audience (subscribers not seen in N days).
  */
 export async function POST(request: Request) {
-  if (!rateLimit(`visit:${clientIp(request)}`, 60, 60_000)) {
-    return jsonError("Rate limit exceeded", 429);
-  }
-  let body: { siteId?: string; endpoint?: string };
+  const origin = request.headers.get("origin");
+  const headers = corsHeaders(origin);
+
   try {
-    body = (await request.json()) as typeof body;
-  } catch {
-    return jsonError("Invalid JSON", 400);
+    if (!rateLimit(`visit:${clientIp(request)}`, 60, 60_000)) {
+      return jsonError("Rate limit exceeded", 429, headers);
+    }
+    let body: { siteId?: string; endpoint?: string };
+    try {
+      body = (await request.json()) as typeof body;
+    } catch {
+      return jsonError("Invalid JSON", 400, headers);
+    }
+    if (!body.siteId || !body.endpoint) return jsonError("siteId and endpoint required", 400, headers);
+    const store = await getStore();
+    const site = await store.getSite(body.siteId);
+    if (!site) return jsonError("Site not found", 404, headers);
+    if (!originMatchesDomain(request, site.domain)) {
+      return jsonError("Origin does not match site domain", 403, headers);
+    }
+    await store.touchSubscriberVisit(site.id, body.endpoint);
+    return Response.json({ ok: true }, { headers });
+  } catch (err: unknown) {
+    const e = err as Error;
+    return Response.json({ error: e.message || "Failed to record visit" }, { status: 500, headers });
   }
-  if (!body.siteId || !body.endpoint) return jsonError("siteId and endpoint required", 400);
-  const store = await getStore();
-  const site = await store.getSite(body.siteId);
-  if (!site) return jsonError("Site not found", 404);
-  if (!originMatchesDomain(request, site.domain)) {
-    return jsonError("Origin does not match site domain", 403);
-  }
-  await store.touchSubscriberVisit(site.id, body.endpoint);
-  return Response.json({ ok: true }, { headers: corsHeaders(request.headers.get("origin")) });
 }
