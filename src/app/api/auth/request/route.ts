@@ -18,13 +18,17 @@ export async function POST(request: Request) {
   if (!rateLimit(`auth-request-email:${body.email.toLowerCase()}`, 3, 600_000)) {
     return Response.json({ ok: true });
   }
-  const result = await requestLoginCode(body.email);
-  // devCode exists only when no Resend key is configured anywhere, and is
-  // only exposed outside production (local development convenience).
-  if (process.env.NODE_ENV === "production") {
-    const safe = { ...result };
-    delete safe.devCode;
-    return Response.json(safe);
+  try {
+    const result = await requestLoginCode(body.email);
+    // devCode exists only when no Resend key is configured anywhere, and is
+    // only exposed outside production (local development convenience).
+    if (process.env.NODE_ENV === "production") {
+      const safe = { ...result };
+      delete safe.devCode;
+      return Response.json(safe);
+    }
+    return Response.json(result);
+  } catch (err) {
+    return jsonError(err instanceof Error ? err.message : "Failed to send login email", 500);
   }
-  return Response.json(result);
 }
