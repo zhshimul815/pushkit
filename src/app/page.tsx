@@ -21,8 +21,9 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CAPACITY_STATS, GITHUB_URL, MarketingFooter, MarketingHeader } from "@/components/marketing";
+import { GITHUB_URL, MarketingFooter, MarketingHeader } from "@/components/marketing";
 import { LandingDemo } from "@/components/landing-demo";
+import StatsBlock from "@/components/blocks/stats-3";
 
 /* ------------------------------------------------------------------ */
 /* Content                                                             */
@@ -159,20 +160,7 @@ export default function LandingPage() {
       </section>
 
       {/* Capacity stats */}
-      <section className="border-y bg-secondary/40">
-        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-4 py-8 text-center sm:grid-cols-3 lg:grid-cols-5">
-          {CAPACITY_STATS.map((stat) => (
-            <div key={stat.label}>
-              <p className="text-2xl font-bold sm:text-3xl">{stat.value}</p>
-              <p className="mt-1 text-sm text-muted-foreground">{stat.label}</p>
-            </div>
-          ))}
-        </div>
-        <p className="px-4 pb-6 text-center text-xs text-muted-foreground">
-          Capacity computed from Cloudflare&apos;s published free-tier limits and PushKit&apos;s
-          batching design — full math on the <Link href="/deploy" className="underline">Deploy page</Link>.
-        </p>
-      </section>
+      <StatsBlock />
 
       {/* The cost problem — actual published pricing */}
       <section className="mx-auto max-w-6xl px-4 py-16">
