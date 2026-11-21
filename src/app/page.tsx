@@ -23,6 +23,7 @@ import { GITHUB_URL, MarketingFooter, MarketingHeader } from "@/components/marke
 import { LandingDemo } from "@/components/landing-demo";
 import StatsBlock from "@/components/blocks/stats-3";
 import { CloudflareIcon, GitHubIcon } from "@/components/icons";
+import { MacNotificationShowcase } from "@/components/mac-notification-showcase";
 
 /* ------------------------------------------------------------------ */
 /* Content                                                             */
@@ -166,10 +167,7 @@ export default function LandingPage() {
         <div className="max-w-2xl">
           <h2 className="text-3xl font-bold tracking-tight">This is the actual dashboard</h2>
           <p className="mt-3 text-muted-foreground">
-            Not a screenshot and not a mockup — the panel below is rendered live from the same
-            dashboard components PushKit ships, filled with sample data from a fictional
-            publisher (48,214 subscribers). It is view-only; deploy PushKit to run it on your
-            own sites.
+            Explore the full interface below. Click any tab in the sidebar (Sites, Campaigns, Composer, Subscribers, Templates) to preview that screen with realistic publisher data, or toggle to the mobile phone view.
           </p>
         </div>
         <div className="mt-8">
@@ -189,19 +187,21 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Mac Web Push Showcase */}
+      <MacNotificationShowcase />
+
       {/* The cost problem — actual published pricing */}
-      <section className="border-y bg-secondary/40">
-        <div className="mx-auto max-w-6xl px-4 py-16">
-          <div className="max-w-2xl">
-            <h2 className="text-3xl font-bold tracking-tight">The problem: success is what gets expensive</h2>
-            <p className="mt-3 text-muted-foreground">
-              SaaS push pricing scales with your subscriber count, so the bill grows exactly when
-              your audience does. OneSignal&apos;s published Growth pricing is $19/month plus
-              $0.004 per subscriber — and its free plan stops at 10,000 subscribers per send.
-              PushEngage&apos;s free plan stops at 200. Here is what that math does:
-            </p>
-          </div>
-          <div className="mt-8 overflow-x-auto rounded-lg border bg-background">
+      <section className="mx-auto max-w-6xl px-4 py-16">
+        <div className="max-w-2xl">
+          <h2 className="text-3xl font-bold tracking-tight">The problem: success is what gets expensive</h2>
+          <p className="mt-3 text-muted-foreground">
+            SaaS push pricing scales with your subscriber count, so the bill grows exactly when
+            your audience does. OneSignal&apos;s published Growth pricing is $19/month plus
+            $0.004 per subscriber — and its free plan stops at 10,000 subscribers per send.
+            PushEngage&apos;s free plan stops at 200. Here is what that math does:
+          </p>
+        </div>
+        <div className="mt-8 overflow-x-auto rounded-lg border bg-background">
             <table className="w-full min-w-[560px] text-left text-sm">
               <thead>
                 <tr className="border-b bg-secondary/50">
@@ -229,8 +229,7 @@ export default function LandingPage() {
             (≈130,000/day) or the $5 Workers Paid plan.{" "}
             <Link href="/compare" className="underline">Full comparison →</Link>
           </p>
-        </div>
-      </section>
+        </section>
 
       {/* Features */}
       <section id="features" className="mx-auto max-w-6xl px-4 py-16">
