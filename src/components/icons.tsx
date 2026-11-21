@@ -79,3 +79,49 @@ export function OneSignalIcon({ className = "size-5" }: { className?: string }) 
     </svg>
   );
 }
+
+export function CodeGlassIcon({ className = "size-5" }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      className={className}
+      overflow="visible"
+      aria-hidden="true"
+    >
+      <defs>
+        <linearGradient id="code-glass-ge" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="24">
+          <stop offset="0" stopColor="currentColor" stopOpacity="1" />
+          <stop offset="1" stopColor="currentColor" stopOpacity="0.55" />
+        </linearGradient>
+        <mask id="code-glass-gm" maskUnits="userSpaceOnUse" x="-2" y="-2" width="28" height="28">
+          <path
+            d="M8 7L4.061 10.939A1.5 1.5 0 0 0 4.061 13.061L8 17"
+            fill="none"
+            stroke="#fff"
+            strokeWidth="2.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M16 7L19.939 10.939A1.5 1.5 0 0 1 19.939 13.061L16 17"
+            fill="none"
+            stroke="#fff"
+            strokeWidth="2.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M13.5 5L10.5 19"
+            fill="none"
+            stroke="#fff"
+            strokeWidth="2.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </mask>
+      </defs>
+      <rect x="-2" y="-2" width="28" height="28" fill="url(#code-glass-ge)" mask="url(#code-glass-gm)" />
+    </svg>
+  );
+}

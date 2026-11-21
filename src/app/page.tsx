@@ -22,7 +22,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GITHUB_URL, MarketingFooter, MarketingHeader } from "@/components/marketing";
 import { LandingDemo } from "@/components/landing-demo";
 import StatsBlock from "@/components/blocks/stats-3";
-import { CloudflareIcon, GitHubIcon, OneSignalIcon } from "@/components/icons";
+import { CloudflareIcon, CodeGlassIcon, GitHubIcon, OneSignalIcon } from "@/components/icons";
 import { MacNotificationShowcase } from "@/components/mac-notification-showcase";
 
 /* ------------------------------------------------------------------ */
@@ -360,7 +360,7 @@ export default function LandingPage() {
             </p>
             <div className="mt-5 flex flex-wrap justify-center gap-3">
               <Button size="lg" render={<Link href="/deploy" />}>
-                <CloudflareIcon className="size-5 shrink-0" /> Open the Deploy Guide
+                <CodeGlassIcon className="size-5 shrink-0" /> Open the Deploy Guide
               </Button>
               <Button size="lg" variant="outline" render={<a href={GITHUB_URL} target="_blank" rel="noreferrer" />}>
                 <GitHubIcon className="size-5 shrink-0" /> GitHub
