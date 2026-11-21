@@ -25,8 +25,6 @@ import {
   Search,
   Download,
   Bell,
-  CheckCircle2,
-  Clock,
   Laptop,
 } from "lucide-react";
 
@@ -40,8 +38,7 @@ type NavTab =
   | "Campaigns"
   | "New Campaign"
   | "Subscribers"
-  | "Templates"
-  | "Settings";
+  | "Templates";
 
 const NAV_ITEMS: { name: NavTab; icon: typeof LayoutDashboard }[] = [
   { name: "Overview", icon: LayoutDashboard },
@@ -50,7 +47,6 @@ const NAV_ITEMS: { name: NavTab; icon: typeof LayoutDashboard }[] = [
   { name: "New Campaign", icon: PlusCircle },
   { name: "Subscribers", icon: Users },
   { name: "Templates", icon: FileText },
-  { name: "Settings", icon: Settings },
 ];
 
 /* 30 days series for Overview chart */
@@ -227,6 +223,14 @@ export function LandingDemo() {
                       </button>
                     );
                   })}
+                  <div className="pt-2 border-t border-border/40 mt-2">
+                    <div className="w-full flex items-center justify-between rounded-lg px-2.5 py-1.5 text-xs text-muted-foreground">
+                      <span className="flex items-center gap-2.5">
+                        <Settings className="size-4 shrink-0 text-muted-foreground/70" />
+                        Settings
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -242,8 +246,8 @@ export function LandingDemo() {
             <div className="flex-1 overflow-y-auto p-5 scroll-smooth">
               <div className="max-w-5xl mx-auto space-y-4">
                 {/* Header of Active Tab */}
-                <div className="flex items-center justify-between border-b pb-3">
-                  <div>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b pb-3">
+                  <div className="min-w-0 flex-1">
                     <h3 className="text-lg font-bold tracking-tight">{activeTab}</h3>
                     <p className="text-xs text-muted-foreground">
                       {activeTab === "Overview" && "Performance metrics, audience breakdown, and recent delivery history."}
@@ -252,10 +256,9 @@ export function LandingDemo() {
                       {activeTab === "New Campaign" && "Compose and preview rich web push notifications with instant device preview."}
                       {activeTab === "Subscribers" && "Audience directory with browser, OS, device, tags, and export options."}
                       {activeTab === "Templates" && "Reusable campaign templates for breaking news, digests, and deals."}
-                      {activeTab === "Settings" && "PushKit deployment details, Cloudflare bindings, and authentication."}
                     </p>
                   </div>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="shrink-0 text-xs text-muted-foreground">
                     Site: <strong className="text-foreground">Daily Tech Blog</strong>
                   </span>
                 </div>
@@ -354,13 +357,8 @@ export function LandingDemo() {
                       {SITES.map((site) => (
                         <Card key={site.siteId} className="relative overflow-hidden">
                           <CardHeader className="pb-2">
-                            <div className="flex items-center justify-between">
-                              <CardTitle className="text-sm font-semibold">{site.name}</CardTitle>
-                              <Badge variant="outline" className="text-emerald-600 border-emerald-500/30">
-                                <CheckCircle2 className="mr-1 size-3" /> {site.status}
-                              </Badge>
-                            </div>
-                            <p className="text-xs text-muted-foreground font-mono">{site.domain}</p>
+                            <CardTitle className="text-sm font-semibold truncate">{site.name}</CardTitle>
+                            <p className="text-xs text-muted-foreground font-mono truncate">{site.domain}</p>
                           </CardHeader>
                           <CardContent>
                             <p className="text-2xl font-bold">{site.subscribers}</p>
@@ -627,45 +625,6 @@ export function LandingDemo() {
                     ))}
                   </div>
                 )}
-
-                {/* TAB 7: SETTINGS */}
-                {activeTab === "Settings" && (
-                  <div className="space-y-4">
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-sm">Instance Configuration</CardTitle>
-                        <p className="text-xs text-muted-foreground">
-                          PushKit runs 100% serverless on your Cloudflare account. Zero server maintenance.
-                        </p>
-                      </CardHeader>
-                      <CardContent className="space-y-3">
-                        <div className="rounded-lg border bg-muted/20 p-3 space-y-2 text-xs">
-                          <div className="flex items-center justify-between">
-                            <span className="text-muted-foreground">Database Engine:</span>
-                            <span className="font-mono font-medium">Cloudflare D1 (pushkit-d1) · Connected</span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-muted-foreground">Delivery Queue:</span>
-                            <span className="font-mono font-medium">Cloudflare Queues (100 msgs/batch) · Active</span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-muted-foreground">VAPID Signature:</span>
-                            <span className="font-mono font-medium">RFC 8292 ES256 ECDSA · Configured</span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-muted-foreground">License:</span>
-                            <span className="font-medium">Elastic License 2.0 (ELv2)</span>
-                          </div>
-                        </div>
-
-                        <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-3 text-xs text-amber-700 dark:text-amber-400">
-                          <Clock className="size-3.5 inline mr-1" />
-                          In this live demo, instance configuration and token management are read-only.
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                )}
               </div>
             </div>
           </div>
@@ -706,6 +665,9 @@ export function LandingDemo() {
                 </button>
               );
             })}
+            <span className="shrink-0 rounded-full px-2.5 py-1 text-[11px] font-medium text-muted-foreground bg-muted/50 opacity-60">
+              Settings
+            </span>
           </div>
 
           {/* Mobile Scrollable Viewport */}
@@ -822,15 +784,6 @@ export function LandingDemo() {
                     <p className="text-[11px] text-muted-foreground mt-0.5">{tmpl.body}</p>
                   </div>
                 ))}
-              </div>
-            )}
-
-            {activeTab === "Settings" && (
-              <div className="rounded-xl border bg-card p-3 text-xs space-y-2">
-                <p className="font-bold">Cloudflare Edge Bindings</p>
-                <p className="text-[11px] text-muted-foreground">Database: D1 (Connected)</p>
-                <p className="text-[11px] text-muted-foreground">Queues: Active (100 batch)</p>
-                <p className="text-[11px] text-muted-foreground">Keys: RFC 8292 ES256</p>
               </div>
             )}
           </div>
