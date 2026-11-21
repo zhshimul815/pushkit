@@ -1,19 +1,7 @@
-import dynamicImport from "next/dynamic";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { OverviewChart } from "@/components/dashboard/overview-chart";
 import { getStore } from "@/lib/store";
 import type { OverviewStats } from "@/lib/types";
-
-const OverviewChart = dynamicImport(
-  () => import("@/components/dashboard/overview-chart").then((mod) => mod.OverviewChart),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="flex h-[280px] w-full items-center justify-center text-sm text-muted-foreground">
-        Loading chart...
-      </div>
-    ),
-  }
-);
 
 export const dynamic = "force-dynamic";
 
