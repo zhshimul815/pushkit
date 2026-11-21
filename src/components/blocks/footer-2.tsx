@@ -1,86 +1,176 @@
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
-
-const GITHUB_URL = "https://github.com/zhshimul815/pushkit";
-
-const NAV_LINKS = [
-  { label: "Deploy Guide", href: "/deploy" },
-  { label: "Compare", href: "/compare" },
-  { label: "GitHub", href: GITHUB_URL, external: true },
-  { label: "Dashboard", href: "/login" },
-];
+import { Bell } from "lucide-react";
+import {
+  GITHUB_REPO_URL,
+  GITHUB_BUG_REPORT_URL,
+  GITHUB_FEATURE_REQUEST_URL,
+  X_URL,
+  X_HANDLE,
+} from "@/lib/site-config";
 
 export default function FooterBlock() {
   return (
-    <section className="flex w-full flex-col items-stretch bg-background text-foreground">
-      <Separator />
-      <footer className="w-full px-6 py-6">
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-3">
-            <svg
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              aria-hidden="true"
-              className="size-6 shrink-0 text-primary"
-            >
-              <rect
-                x="3"
-                y="3"
-                width="8"
-                height="8"
-                transform="rotate(-6 7 7)"
-              />
-              <rect
-                x="3"
-                y="13"
-                width="8"
-                height="8"
-                transform="rotate(5 7 17)"
-              />
-              <rect
-                x="13"
-                y="13"
-                width="8"
-                height="8"
-                transform="rotate(-4 17 17)"
-              />
-              <rect
-                x="13"
-                y="3"
-                width="8"
-                height="8"
-                transform="rotate(15 17 7)"
-              />
-            </svg>
-            <div className="flex flex-col leading-none">
-              <span className="text-sm font-bold tracking-tight">PushKit</span>
-              <span className="text-xs text-muted-foreground">
-                Self-hosted web push notifications.
-              </span>
-            </div>
+    <footer className="w-full border-t bg-background text-foreground">
+      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+        <div className="grid grid-cols-2 gap-8 sm:grid-cols-4 md:gap-12">
+          {/* Column 1: Product */}
+          <div className="flex flex-col gap-3">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-foreground">
+              Product
+            </h3>
+            <ul className="flex flex-col gap-2 text-sm text-muted-foreground">
+              <li>
+                <Link href="/compare" className="transition hover:text-foreground">
+                  Compare
+                </Link>
+              </li>
+              <li>
+                <Link href="/deploy" className="transition hover:text-foreground">
+                  Deploy Guide
+                </Link>
+              </li>
+              <li>
+                <Link href="/roadmap" className="transition hover:text-foreground">
+                  Roadmap
+                </Link>
+              </li>
+              <li>
+                <Link href="/changelog" className="transition hover:text-foreground">
+                  Changelog
+                </Link>
+              </li>
+            </ul>
           </div>
 
-          <nav
-            aria-label="Footer"
-            className="flex flex-wrap items-center gap-x-5 gap-y-1"
-          >
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                {...(link.external ? { target: "_blank", rel: "noreferrer" } : {})}
-                className="text-xs text-muted-foreground transition-colors hover:text-foreground"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
+          {/* Column 2: Documentation */}
+          <div className="flex flex-col gap-3">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-foreground">
+              Documentation
+            </h3>
+            <ul className="flex flex-col gap-2 text-sm text-muted-foreground">
+              <li>
+                <Link href="/docs" className="transition hover:text-foreground">
+                  Getting Started
+                </Link>
+              </li>
+              <li>
+                <Link href="/docs/wordpress" className="transition hover:text-foreground">
+                  WordPress Guide
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/docs/migrate-from-onesignal"
+                  className="transition hover:text-foreground"
+                >
+                  Migration Guide
+                </Link>
+              </li>
+              <li>
+                <Link href="/docs/api" className="transition hover:text-foreground">
+                  API Reference
+                </Link>
+              </li>
+            </ul>
+          </div>
 
-          <p className="shrink-0 text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} PushKit. ELv2 License.
+          {/* Column 3: Community */}
+          <div className="flex flex-col gap-3">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-foreground">
+              Community
+            </h3>
+            <ul className="flex flex-col gap-2 text-sm text-muted-foreground">
+              <li>
+                <a
+                  href={GITHUB_REPO_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="transition hover:text-foreground"
+                >
+                  GitHub
+                </a>
+              </li>
+              <li>
+                <a
+                  href={GITHUB_BUG_REPORT_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="transition hover:text-foreground"
+                >
+                  Report a Bug
+                </a>
+              </li>
+              <li>
+                <a
+                  href={GITHUB_FEATURE_REQUEST_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="transition hover:text-foreground"
+                >
+                  Request a Feature
+                </a>
+              </li>
+              <li>
+                <a
+                  href={X_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="transition hover:text-foreground"
+                >
+                  Follow @{X_HANDLE} on X
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 4: Legal */}
+          <div className="flex flex-col gap-3">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-foreground">
+              Legal
+            </h3>
+            <ul className="flex flex-col gap-2 text-sm text-muted-foreground">
+              <li>
+                <a
+                  href={`${GITHUB_REPO_URL}/blob/main/LICENSE`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="transition hover:text-foreground"
+                >
+                  MIT License
+                </a>
+              </li>
+              <li>
+                <a
+                  href={GITHUB_REPO_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="transition hover:text-foreground"
+                >
+                  Source Code
+                </a>
+              </li>
+              <li>
+                <Link href="/login" className="transition hover:text-foreground">
+                  Dashboard Login
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <Separator className="my-8" />
+
+        <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+          <div className="flex items-center gap-2">
+            <Bell className="size-4 text-primary" />
+            <span className="text-sm font-semibold tracking-tight">PushKit</span>
+          </div>
+          <p className="text-center text-xs text-muted-foreground sm:text-right">
+            PushKit — MIT-licensed open source. Your subscribers, your database, your Cloudflare account.
           </p>
         </div>
-      </footer>
-    </section>
+      </div>
+    </footer>
   );
 }

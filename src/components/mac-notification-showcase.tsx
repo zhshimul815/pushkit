@@ -38,7 +38,7 @@ export function MacNotificationShowcase() {
             What your readers actually see
           </h2>
           <p className="mt-3 text-muted-foreground sm:text-base">
-            Native, zero-friction delivery right to your reader&apos;s desktop or phone. No app install required, no middleware latency — sent directly from your Cloudflare edge queue to Apple, Google, and Mozilla push services.
+            Delivered directly to desktop and mobile browsers. No mobile app install required — sent directly from your Cloudflare queue to Apple, Google, and Mozilla push services.
           </p>
 
           {/* Device Screen Switcher */}

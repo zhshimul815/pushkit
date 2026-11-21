@@ -5,7 +5,11 @@ Send browser push notifications from your own Cloudflare account — unlimited s
 
 PushKit is the self-hosted alternative to OneSignal, PushEngage, VWO Engage, and LaraPush: the same composer, segmentation, auto-push, and analytics — running in your Cloudflare account, with every subscriber record in your own D1 database.
 
-- Landing page: `/` · Deployment guide: `/deploy` · Admin login: `/login` · Dashboard: `/dashboard`
+- **Live Site:** [https://pushkit.infy.workers.dev](https://pushkit.infy.workers.dev)
+- **Documentation:** [/docs](https://pushkit.infy.workers.dev/docs)
+- **Deployment Guide:** [/deploy](https://pushkit.infy.workers.dev/deploy)
+- **Compare:** [/compare](https://pushkit.infy.workers.dev/compare)
+- **Contributing:** [CONTRIBUTING.md](CONTRIBUTING.md)
 - One install serves your own sites only. There is **no public sign-up**: one owner account, plus staff the owner invites.
 
 ![PushKit dashboard overview](public/screenshots/overview-desktop.png)
@@ -372,4 +376,4 @@ Exceeding a daily limit pauses that resource until the daily reset; no data is l
 
 ## License
 
-[Elastic License 2.0 (ELv2)](LICENSE) — Free for individuals, businesses, and developers to use, modify, distribute, and self-host. Providing PushKit to third parties as a hosted or managed cloud service is prohibited.
+[MIT License](LICENSE) — Copyright (c) 2026 PushKit contributors. Free for individuals, businesses, and developers to use, modify, distribute, and self-host.
